@@ -1,33 +1,37 @@
 var Db = require('mongodb').Db;
-var url = require('url');
 var Connection = require('mongodb').Connection;
 var Server = require('mongodb').Server;
 
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
-console.log()
-
 var config = require("./config.json");
 
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL;
 
 console.log("Getting data provider configuration.");
-console.log("DB name is " + config.mongoDbName);
 
 BookProvider = function () {
+    var username;
+    var password;
+
+    var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL;
     if (mongoUri) {
-        var parsedPath = config.mongoDbName = url.parse(mongoUri);
-        console.log(parsedPath.dbName)
-        console.log(parsedPath.port);
-        console.log(parsedPath.host);
-        console.log(parsedPath.username);
-        console.log(parsedPath.password);
+        // parsing mongoLab, if any
+        var match = /mongodb:\/\/(\w+):(\w+)@([\w\.]+):(\d+)\/(\w+)/g.exec(mongoUri)
+        username = match[1];
+        password = match[2];
+        config.mongoHost = match[3];
+        config.mongoPort = parseInt(match[4]);
+        config.mongoDbName = match[5];
+        console.log("Parsed configs. Using connection string provided by mongolab.")
     }
     this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}, {}));
     this.db.open(function () {
         console.log("Opened connection to DB")
     });
+    if (username && password) {
+        this.db.authenticate(username, password);
+    }
 };
 
 
