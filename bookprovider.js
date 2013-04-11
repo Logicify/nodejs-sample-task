@@ -29,7 +29,7 @@ BookProvider = function () {
     this.db.open(function () {
         console.log("Opened connection to DB")
     });
-    if (username && password) {
+    if (username) {
         this.db.authenticate(username, password, function (err, data) {
             if (err) {
                 console.log(err);
