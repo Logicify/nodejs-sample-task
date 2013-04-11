@@ -1,4 +1,5 @@
 var Db = require('mongodb').Db;
+var url = require('url');
 var Connection = require('mongodb').Connection;
 var Server = require('mongodb').Server;
 
@@ -9,11 +10,20 @@ console.log()
 
 var config = require("./config.json");
 
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL;
+
 console.log("Getting data provider configuration.");
 console.log("DB name is " + config.mongoDbName);
 
 BookProvider = function () {
-    var c = config;
+    if (mongoUri) {
+        var parsedPath = config.mongoDbName = url.parse(mongoUriU);
+        console.log(parsedPath.dbName)
+        console.log(parsedPath.port);
+        console.log(parsedPath.host);
+        console.log(parsedPath.username);
+        console.log(parsedPath.password);
+    }
     this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}, {}));
     this.db.open(function () {
         console.log("Opened connection to DB")
