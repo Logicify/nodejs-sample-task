@@ -5,6 +5,7 @@ var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
+console.log()
 
 var config = require("./config.json");
 
