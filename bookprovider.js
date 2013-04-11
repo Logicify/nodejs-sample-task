@@ -17,7 +17,7 @@ console.log("DB name is " + config.mongoDbName);
 
 BookProvider = function () {
     if (mongoUri) {
-        var parsedPath = config.mongoDbName = url.parse(mongoUriU);
+        var parsedPath = config.mongoDbName = url.parse(mongoUri);
         console.log(parsedPath.dbName)
         console.log(parsedPath.port);
         console.log(parsedPath.host);
