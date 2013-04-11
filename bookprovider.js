@@ -26,11 +26,11 @@ BookProvider = function () {
         console.log("Parsed configs. Using connection string provided by mongolab.")
     }
     this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}, {}));
-    this.db.open(function () {
+    this.db.open(function (err, db) {
         console.log("Opened connection to DB")
         if (username) {
             console.log('About to perform authentication.')
-            this.db.authenticate(username, password, function (err, data) {
+            db.authenticate(username, password, function (err, data) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -79,22 +79,5 @@ BookProvider.prototype.save = function (book, callback) {
         }
     });
 };
-
-/*
-
- BookProvider.prototype.findById = function (id, callback) {
- this.getCollection(function (error, article_collection) {
- if (error) callback(error)
- else {
- article_collection.findOne({_id: article_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function (error, result) {
- if (error) callback(error)
- else callback(null, result)
- });
- }
- });
- };
-
- */
-
 
 exports.BookProvider = BookProvider;
