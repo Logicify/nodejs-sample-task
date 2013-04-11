@@ -28,16 +28,18 @@ BookProvider = function () {
     this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}, {}));
     this.db.open(function () {
         console.log("Opened connection to DB")
+        if (username) {
+            console.log('About to perform authentication.')
+            this.db.authenticate(username, password, function (err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Success!');
+                }
+            });
+        }
+
     });
-    if (username) {
-        this.db.authenticate(username, password, function (err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('Success!');
-            }
-        });
-    }
 };
 
 
