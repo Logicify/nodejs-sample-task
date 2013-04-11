@@ -39,7 +39,26 @@ BookProvider.prototype.findAll = function (callback) {
     });
 };
 
+BookProvider.prototype.save = function (book, callback) {
+    this.getCollection(function (error, collection) {
+        if (error) {
+            callback(error);
+        } else {
+            book.inserted_at = new Date();
+            if (book.tags === undefined) book.tags = [];
+            for (var j = 0; j < book.tags.length; j++) {
+                book.comments[j].inserted_at = new Date();
+            }
+
+            collection.insert(book, function () {
+                callback(null, book);
+            });
+        }
+    });
+};
+
 /*
+
  BookProvider.prototype.findById = function (id, callback) {
  this.getCollection(function (error, article_collection) {
  if (error) callback(error)
@@ -52,28 +71,7 @@ BookProvider.prototype.findAll = function (callback) {
  });
  };
 
- BookProvider.prototype.save = function (articles, callback) {
- this.getCollection(function (error, article_collection) {
- if (error) callback(error)
- else {
- if (typeof(articles.length) == "undefined")
- articles = [articles];
-
- for (var i = 0; i < articles.length; i++) {
- article = articles[i];
- article.created_at = new Date();
- if (article.comments === undefined) article.comments = [];
- for (var j = 0; j < article.comments.length; j++) {
- article.comments[j].created_at = new Date();
- }
- }
-
- article_collection.insert(articles, function () {
- callback(null, articles);
- });
- }
- });
- };
  */
+
 
 exports.BookProvider = BookProvider;

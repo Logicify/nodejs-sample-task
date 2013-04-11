@@ -3,9 +3,12 @@ var express = require('express');
 
 var app = express();
 
+var bookProvider = new BookProvider();
+
 //Configuration for errorHandler and others.
 app.configure(function () {
     app.use(express.static(__dirname + '/public'));
+    app.use(express.json());
 });
 
 app.configure('development', function () {
@@ -17,15 +20,36 @@ app.configure('production', function () {
 });
 
 
+// mounting REST endpoints. All the other urls would be handled by static (coming from public folder).
+
+// to get all the books -- testing.
 app.get('/rest/allBooks', function (req, res) {
-    new BookProvider().findAll(function (error, data) {
+    bookProvider.findAll(function (error, data) {
         if (error) {
             res.send(JSON.stringify({"error": error}))
         } else {
             res.send(JSON.stringify(data));
         }
     });
-})
+});
+
+// to submit a new book for storage.
+app.post('/rest/newBook', function (req, res) {
+    if (!req.body) {
+        res.send(400, "Wrong format - maybe malformed json?");
+        return;
+    }
+
+    //TODO vadim, here store the document to the elasticsearch.
+    bookProvider.save(req.body, function (error, bookSaved) {
+        if (error) {
+            res.send(400, 'Error saving book!');
+        } else {
+            res.send('OKAY, saved book.');
+        }
+    })
+
+});
 
 app.listen(3000);
 console.log('Listening on port 3000');
