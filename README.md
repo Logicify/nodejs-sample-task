@@ -8,10 +8,10 @@ Building and installing
 
 First, run
 
-npm install
+`npm install`
 
 This will install the dependenceis. Then,
 
-node server.js
+`node server.js`
 
 Which runs the server.
