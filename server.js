@@ -48,12 +48,11 @@ app.post('/rest/newBook', function (req, res) {
             res.send('OKAY, saved book.');
         }
     })
-
 });
 
 var portToListenTo = process.env.PORT | 3000;
 console.log('About to listen on port ' + portToListenTo);
 
 app.listen(portToListenTo);
-console.log('Listening on port 3000');
+console.log('Listening on port ' + portToListenTo);
 
