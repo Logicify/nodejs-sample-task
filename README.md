@@ -16,3 +16,19 @@ This will install the dependencies. Then,
 `node server.js`
 
 Which runs the server.
+
+
+/****** Elastic Search ******/
+install to project
+
+npm install elasticsearch client
+
+Download Elastic Search server 
+
+http://www.elasticsearch.org/download/
+
+run elasticsearch server
+
+`node search_server.js`
+
+/********** END **********/
