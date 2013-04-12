@@ -81,6 +81,25 @@ BookProvider.prototype.save = function (book, callback) {
     });
 };
 
+BookProvider.prototype.update = function (book, callback) {
+    this.getCollection(function (error, collection) {
+        if (error) {
+            callback(error)
+        }
+        else {
+            collection.update({_id: book._id}, book, null,
+                function (err, updated) {
+                    if (err) {
+                        console.log("User not updated");
+                    }
+                    else {
+                        callback(updated)
+                    }
+                });
+        }
+    });
+};
+
 BookProvider.prototype.findByIds = function (ids, callback) {
     this.getCollection(function (error, collection) {
         if (error) {
@@ -99,6 +118,6 @@ BookProvider.prototype.findByIds = function (ids, callback) {
             });
         }
     })
-}
+};
 
 exports.BookProvider = BookProvider;

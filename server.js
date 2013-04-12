@@ -35,6 +35,18 @@ app.get('/rest/allBooks', function (req, res) {
         }
     });
 });
+//Update records
+app.post('/rest/update', function (req, res) {
+
+    bookProvider.update(req.body,function(err,data){
+        if (err) {
+            res.send(400, 'Error saving book!');
+        }
+        else{
+            res.send(data);
+        }
+    })
+});
 // to submit a new book for storage.
 app.post('/rest/newBook', function (req, res) {
     if (!req.body) {
@@ -91,7 +103,6 @@ app.get('/rest/search', function (req, res) {
 
     });
 });
-
 
 var portToListenTo = process.env.PORT || 3000;
 console.log('About to listen on port ' + portToListenTo);
