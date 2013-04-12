@@ -69,8 +69,8 @@ BookProvider.prototype.save = function (book, callback) {
         } else {
             book.inserted_at = new Date();
 
-            if (!book.tags) {
-                book.tags = [];
+            if (!book.Tags) {
+                book.Tags = [];
             }
             for (var j = 0; j < book.tags.length; j++) {
                 book.comments[j].inserted_at = new Date();
