@@ -73,7 +73,7 @@ BookProvider.prototype.save = function (book, callback) {
                 book.Tags = [];
             }
             for (var j = 0; j < book.Tags.length; j++) {
-                book.comments[j].inserted_at = new Date();
+                book.Tags[j].inserted_at = new Date();
             }
             collection.insert(book, function () {
                 callback(null, book);
