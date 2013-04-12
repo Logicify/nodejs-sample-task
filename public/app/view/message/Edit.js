@@ -2,7 +2,6 @@ Ext.define('ExtJsSample.view.message.Edit', {
     extend: 'Ext.window.Window',
     alias: 'widget.messageEdit',
     id: 'messageEditPanel',
-
     layout: 'fit',
     autoShow: true,
     initComponent: function () {

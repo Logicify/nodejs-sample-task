@@ -17,16 +17,16 @@ Ext.define('ExtJsSample.controller.MessageController', {
             'messageList > gridpanel': {
                 itemdblclick: this.editMessage
             },
-            'messageList > button[action=createNewRecord]': {
+            'messageList button[action=createNewRecord]': {
                 click: this.createMessage
             },
-            'messageList > textfield': {
+            'messageList textfield': {
                 search: this.onSearch
             },
-            'messageList > button[action=search]': {
+            'messageList button[action=search]': {
                 click: this.onSearch
             },
-            'messageEdit > button[action=save]': {
+            'messageEdit button[action=save]': {
                 click: this.doSaveMessage
             }
 
@@ -44,12 +44,15 @@ Ext.define('ExtJsSample.controller.MessageController', {
     },
 
     createMessage: function () {
-        var view = Ext.ComponentQuery.query('#messageEditPanel')[0];
+        /*var view = Ext.ComponentQuery.query('#messageEditPanel')[0];
         if (!view) {
             view = Ext.widget('messageEdit');
         }
         view.down('form').getForm().reset();
-        view.setTitle('Create new book');
+        view.setTitle('Create new book');*/
+
+
+        view = Ext.widget('messageEdit');
     },
 
     onSearch: function () {
