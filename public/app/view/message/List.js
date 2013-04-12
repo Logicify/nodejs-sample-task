@@ -1,11 +1,13 @@
 Ext.define('ExtJsSample.view.message.List', {
     extend: 'Ext.form.Panel',
     alias: 'widget.messageList',
+    id: 'messageListPanel',
+
     title: 'Search',
     store: 'MessageStore',
+
     height: 500,
     width: 620,
-    id: 'messageListPanel',
     style: 'margin:0 auto; margin-top:50px;',
     layout: {
         type: 'absolute'
@@ -25,7 +27,14 @@ Ext.define('ExtJsSample.view.message.List', {
                     fieldLabel: 'Keyword',
                     labelWidth: 60,
                     name: 'searchField',
-                    selectOnFocus: true
+                    selectOnFocus: true,
+                    listeners: {
+                        specialkey: function (f, e) {
+                            if (e.getKey() == e.ENTER) {
+                                this.fireEvent("search")
+                            }
+                        }
+                    }
                 },
                 {
                     xtype: 'button',

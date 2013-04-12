@@ -23,8 +23,11 @@ Ext.define('ExtJsSample.controller.MessageController', {
             'messageList > button[action=search]': {
                 click: this.onSearch
             },
-            'messageEdit button[action=save]': {
+            'messageEdit > button[action=save]': {
                 click: this.doSaveMessage
+            },
+            'messageList > textfield': {
+                search: this.onSearch
             }
         });
     },
