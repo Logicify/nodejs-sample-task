@@ -44,15 +44,12 @@ Ext.define('ExtJsSample.controller.MessageController', {
     },
 
     createMessage: function () {
-        /*var view = Ext.ComponentQuery.query('#messageEditPanel')[0];
+        var view = Ext.ComponentQuery.query('#messageEditPanel')[0];
         if (!view) {
             view = Ext.widget('messageEdit');
         }
         view.down('form').getForm().reset();
-        view.setTitle('Create new book');*/
-
-
-        view = Ext.widget('messageEdit');
+        view.setTitle('Create new book');
     },
 
     onSearch: function () {
