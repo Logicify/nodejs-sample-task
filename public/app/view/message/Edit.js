@@ -3,7 +3,7 @@ Ext.define('ExtJsSample.view.message.Edit', {
     alias: 'widget.messageEdit',
     id: 'messageEditPanel',
 
-    layout: 'auto',
+    layout: 'fit',
     autoShow: true,
     initComponent: function () {
         this.items = [
@@ -20,6 +20,7 @@ Ext.define('ExtJsSample.view.message.Edit', {
                         name: 'Title',
                         labelWidth: 50,
                         allowBlank: false,
+                        blankText: 'This field is required',
                         fieldLabel: 'Title'
                     },
                     {

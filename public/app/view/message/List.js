@@ -3,15 +3,13 @@ Ext.define('ExtJsSample.view.message.List', {
     alias: 'widget.messageList',
     id: 'messageListPanel',
 
-    title: 'Books management system',
+    title: 'Book management system',
     store: 'MessageStore',
 
     height: 500,
     width: 620,
     style: 'margin:0 auto; margin-top:50px;',
-    layout: {
-        type: 'absolute'
-    },
+    layout: 'absolute',
     bodyPadding: 10,
     initComponent: function () {
         var me = this;
@@ -65,7 +63,7 @@ Ext.define('ExtJsSample.view.message.List', {
                     x: 10,
                     y: 440,
                     width: 150,
-                    text: 'Create New Book'
+                    text: 'Create New Record'
 
                 }
             ]
