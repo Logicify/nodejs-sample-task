@@ -5,6 +5,7 @@ Ext.define('ExtJsSample.view.message.List', {
     store: 'MessageStore',
     height: 500,
     width: 620,
+    id: 'messageListPanel',
     style: 'margin:0 auto; margin-top:50px;',
     layout: {
         type: 'absolute'

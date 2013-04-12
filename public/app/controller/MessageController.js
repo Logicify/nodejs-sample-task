@@ -40,8 +40,10 @@ Ext.define('ExtJsSample.controller.MessageController', {
 
     onSearch: function () {
         var store = Ext.getStore("MessageStore");
+        var searchQuery = Ext.ComponentQuery.query('#messageListPanel [name=searchField]')[0].getValue();
+        searchQuery = searchQuery.replace(/[\W]+/g, ',');
         store.load({
-            params: {q: 'alice'}
+            params: {q: searchQuery}
         })
     },
 
