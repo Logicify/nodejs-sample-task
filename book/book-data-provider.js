@@ -114,11 +114,12 @@ BookProvider.prototype.update = function (bookUpdate, callback) {
         else {
             var id = bookUpdate._id;
             delete bookUpdate._id;
+
             collection.findAndModify(
                 {_id: ObjectID.createFromHexString(id)},
                 [],
                 {$set: bookUpdate},
-                {},
+                {new: true},
                 function (err, updated) {
                     if (err) {
                         console.log("Book not updated.");

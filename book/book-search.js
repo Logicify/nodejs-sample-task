@@ -35,6 +35,8 @@ Search.prototype.index = function (indexName, typeName, document, id, options, c
             cb(data)
         }
     ).exec();
+
+    this.elasticSearchClient.update()
 };
 
 Search.prototype.search = function (indexName, typeName, queryObj, options, cb) {
@@ -42,6 +44,17 @@ Search.prototype.search = function (indexName, typeName, queryObj, options, cb) 
         .search(indexName, typeName, queryObj, options, cb).on('data',function (data) {
             cb(data)
         }).on('error',function (error) {
+            cb(error)
+        }).exec();
+};
+
+Search.prototype.update = function (indexName, typeName, mongoDocId, doc, cb) {
+    this.elasticSearchClient
+        .update(indexName, typeName, mongoDocId, {doc: doc}, null, cb).on('data',function (data) {
+            console.log(data);
+            cb(data)
+        }).on('error',function (error) {
+            console.log(error);
             cb(error)
         }).exec();
 };

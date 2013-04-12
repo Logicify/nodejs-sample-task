@@ -46,7 +46,7 @@ function BookRestApi() {
                 console.log('Error saving book. Mongodb: ' + error);
                 res.send(500, 'Error saving book!');
             } else {
-                searchProvider.index('book', 'document', elasticSearch(bookSaved), null, null, function (data) {
+                searchProvider.index('book', 'document', elasticSearch(bookSaved), bookSaved._id.toHexString(), null, function (data) {
                     console.info(JSON.stringify(data));
                 });
                 res.send(JSON.stringify(bookSaved));
@@ -82,7 +82,7 @@ function BookRestApi() {
                 return;
             }
             var hits = elasticResponse.hits.hits;
-            console.log(hits.length + " hits found for query " + req.query.id)
+            console.log(hits.length + " hits found for query " + req.query.id);
 
             var ids = hits.map(function (hit) {
                 return hit._source.id;
@@ -105,14 +105,14 @@ function BookRestApi() {
                 res.send(500, 'Error saving book!');
             }
             else {
-                searchProvider.index('book', 'document', elasticSearch(req.body), null, null, function (data) {
-                    console.info(JSON.stringify(data));
+                searchProvider.update('book', 'document', data._id, elasticSearch(data), function (d) {
+                    console.info(JSON.stringify(d));
                 });
-
                 res.send(data);
             }
         });
     };
+
     var elasticSearch = function (book) {
         return {
             "name": book.name,
