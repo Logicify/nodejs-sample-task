@@ -9,9 +9,7 @@ Ext.application({
         Ext.create('Ext.container.Viewport', {
             layout: 'auto',
             items: {
-                xtype: 'messageList',
-                region: 'center',
-                margins: '5 5 5 5'
+                xtype: 'messageList'
             }
         });
     }

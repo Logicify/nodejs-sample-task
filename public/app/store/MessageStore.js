@@ -1,21 +1,22 @@
 Ext.define('ExtJsSample.store.MessageStore', {
     extend: 'Ext.data.Store',
     model: 'ExtJsSample.model.Message',
-    autoLoad: true,
+    autoLoad: false,
     autoSync: true,
     proxy: {
         type: 'ajax',
-        limitParam: 'size',
-        startParam: undefined,
+        pageParam: false,
+        startParam: false,
+        limitParam: false,
+        noCache: false,
         api: {
-            create: '/message/create',
-            read: '/message/list',
-            update: '/message/update'
+            create: '/rest/newBook',
+            read: '/rest/search',
+            update: '/rest/update'
         },
         reader: {
             type: 'json',
-            root: 'data',
-            successProperty: 'success'
+            readRecordsOnFailure: false
         },
         writer: {
             type: 'json',

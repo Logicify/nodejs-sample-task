@@ -1,51 +1,67 @@
 Ext.define('ExtJsSample.view.message.List', {
-    extend: 'Ext.grid.Panel',
+    extend: 'Ext.form.Panel',
     alias: 'widget.messageList',
-    title: 'Search Result',
+    title: 'Search',
     store: 'MessageStore',
+    height: 500,
+    width: 620,
+    style: 'margin:0 auto; margin-top:50px;',
+    layout: {
+        type: 'absolute'
+    },
+    bodyPadding: 10,
     initComponent: function () {
-        this.tbar = [
-            {
-                text: 'Create message', action: 'create'
-            }
-        ];
-        this.columns = [
-            { header: 'Title', dataIndex: 'title', width: 200},
-            { header: 'Author', dataIndex: 'author', width: 150 },
-            { header: 'Tags', dataIndex: 'tags', width: 300 },
-            { header: 'Text', dataIndex: 'text', flex: 1 }
+        var me = this;
 
-        ];
-        this.addEvents('removeitem');
-        this.actions = {
-            removeitem: Ext.create('Ext.Action', {
-                text: 'Remove Message',
-                handler: function () {
-                    this.fireEvent('removeitem', this.getSelected())
-                },
-                scope: this
-            })
-        };
-        var contextMenu = Ext.create('Ext.menu.Menu', {
+        Ext.applyIf(me, {
             items: [
-                this.actions.removeitem
+                {
+                    xtype: 'textfield',
+                    x: 10,
+                    y: 10,
+                    formBind: true,
+                    width: 433,
+                    fieldLabel: 'Keyword',
+                    labelWidth: 60,
+                    name: 'searchField',
+                    selectOnFocus: true
+                },
+                {
+                    xtype: 'button',
+                    action: 'search',
+                    x: 460,
+                    y: 10,
+                    width: 150,
+                    text: 'Search'
+                },
+                {
+                    xtype: 'gridpanel',
+                    store: 'MessageStore',
+                    x: 10,
+                    y: 50,
+                    width: 600,
+                    height: 380,
+                    title: 'Search Result',
+                    columns: [
+                        { header: 'Title', dataIndex: 'Title', width: 100},
+                        { header: 'Author', dataIndex: 'Author', width: 100 },
+                        { header: 'Tags', dataIndex: 'Tags', width: 150 },
+                        { header: 'Text', dataIndex: 'Text', flex: 1 }
+
+                    ]
+                },
+                {
+                    xtype: 'button',
+                    action: 'create',
+                    x: 10,
+                    y: 440,
+                    width: 150,
+                    text: 'Create'
+
+                }
             ]
         });
-        this.on({
-            itemcontextmenu: function (view, rec, node, index, e) {
-                e.stopEvent();
-                contextMenu.showAt(e.getXY());
-                return false;
-            }
-        });
-        this.callParent(arguments);
-    },
-    getSelected: function () {
-        var sm = this.getSelectionModel();
-        var rs = sm.getSelection();
-        if (rs.length) {
-            return rs[0];
-        }
-        return null;
+
+        me.callParent(arguments);
     }
 });
