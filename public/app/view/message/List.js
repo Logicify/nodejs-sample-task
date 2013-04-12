@@ -3,7 +3,7 @@ Ext.define('ExtJsSample.view.message.List', {
     alias: 'widget.messageList',
     id: 'messageListPanel',
 
-    title: 'Search',
+    title: 'Books management system',
     store: 'MessageStore',
 
     height: 500,
@@ -65,7 +65,7 @@ Ext.define('ExtJsSample.view.message.List', {
                     x: 10,
                     y: 440,
                     width: 150,
-                    text: 'Create New Record'
+                    text: 'Create New Book'
 
                 }
             ]

@@ -18,26 +18,30 @@ Ext.define('ExtJsSample.view.message.Edit', {
                     {
                         xtype: 'textfield',
                         name: 'Title',
+                        labelWidth: 50,
                         allowBlank: false,
                         fieldLabel: 'Title'
                     },
                     {
                         xtype: 'textfield',
-                        name: 'Text',
-                        allowBlank: false,
-                        fieldLabel: 'Text'
-                    },
-                    {
-                        xtype: 'textfield',
                         name: 'Author',
+                        labelWidth: 50,
                         allowBlank: false,
                         fieldLabel: 'Author'
                     },
                     {
                         xtype: 'textfield',
                         name: 'Tags',
+                        labelWidth: 50,
                         allowBlank: false,
                         fieldLabel: 'Tags'
+                    },
+                    {
+                        xtype: 'textareafield',
+                        name: 'Text',
+                        labelWidth: 50,
+                        allowBlank: false,
+                        fieldLabel: 'Text'
                     }
                 ]
             }
