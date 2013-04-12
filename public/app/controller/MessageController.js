@@ -80,6 +80,12 @@ Ext.define('ExtJsSample.controller.MessageController', {
                 store.add(values);
             }
             store.load();
+            Ext.Msg.show({
+                title: 'Changes saved',
+                msg: 'Changes saved successfully',
+                icon: Ext.window.MessageBox.INFO,
+                buttons: Ext.Msg.OK
+            });
             win.close();
         }
     }
