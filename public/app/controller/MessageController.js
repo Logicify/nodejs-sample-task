@@ -3,9 +3,11 @@ Ext.define('ExtJsSample.controller.MessageController', {
     stores: [
         'MessageStore'
     ],
+
     models: [
         'Message'
     ],
+
     views: [
         'message.List',
         'message.Create',
@@ -13,35 +15,42 @@ Ext.define('ExtJsSample.controller.MessageController', {
     ],
     init: function () {
         this.control({
-            'messageList': {
-                itemdblclick: this.editMessage,
-                removeitem: this.removeMessage
+            'messageList > gridpanel': {
+                itemdblclick: this.editMessage
             },
-            'messageList > toolbar > button[action=create]': {
+            'messageList > button[action=create]': {
                 click: this.onCreateMessage
+            },
+            'messageList > button[action=search]': {
+                click: this.onSearch
             },
             'messageCreate button[action=save]': {
                 click: this.doCreateMessage
             },
             'messageEdit button[action=save]': {
-                click: this.updateMessage
+                click: this.doUpdateMessage
             }
         });
     },
+
     editMessage: function (grid, record) {
         var view = Ext.widget('messageEdit');
         view.down('form').loadRecord(record);
     },
-    removeMessage: function (msg) {
-        Ext.Msg.confirm('Remove Message', 'Are you sure?', function (button) {
-            if (button == 'yes') {
-                Ext.getStore("MessageStore").remove(msg);
-            }
-        }, this);
-    },
+
     onCreateMessage: function () {
         var view = Ext.widget('messageCreate');
     },
+
+
+    onSearch: function () {
+        var form = win.down('form');
+        var store = Ext.getStore("MessageStore");
+        store.load({
+            params: {q: 'alice'}
+        })
+    },
+
     doCreateMessage: function (button) {
         var win = button.up('window'),
             form = win.down('form'),
@@ -52,7 +61,8 @@ Ext.define('ExtJsSample.controller.MessageController', {
             win.close();
         }
     },
-    updateMessage: function (button) {
+
+    doUpdateMessage: function (button) {
         var win = button.up('window'),
             form = win.down('form'),
             record = form.getRecord(),
