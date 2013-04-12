@@ -23,7 +23,7 @@ Ext.define('ExtJsSample.controller.MessageController', {
             'messageCreate button[action=save]': {
                 click: this.doCreateMessage
             },
-            'messageCreate button[action=save]': {
+            'messageEdit button[action=save]': {
                 click: this.updateMessage
             }
         });
