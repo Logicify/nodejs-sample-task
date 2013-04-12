@@ -48,12 +48,8 @@ function BookRestApi() {
                 res.send(500, 'Error saving book!');
             } else {
                 res.send('OKAY, saved book.');
-                var querySave = {
-                    "name": bookSaved.name,
-                    "text": [bookSaved.Text, bookSaved.Title, bookSaved.Author, bookSaved.Tags.join(" ")].join(" "),
-                    "id": bookSaved._id
-                };
-                searchProvider.index('book', 'document', querySave, null, null, function (data) {
+
+                searchProvider.index('book', 'document', elasticSearch(req.body), null, null, function (data) {
                     console.info(JSON.stringify(data));
                 })
             }
@@ -113,9 +109,19 @@ function BookRestApi() {
             else {
                 res.send(data);
             }
-        })
-    }
+        });
 
+        searchProvider.index('book', 'document',  elasticSearch(req.body), null, null, function (data) {
+            console.info(JSON.stringify(data));
+        })
+    };
+    var elasticSearch = function (book) {
+        return {
+            "name": book.name,
+            "text": [book.Text, book.Title, book.Author, book.Tags.join(" ")].join(" "),
+            "id": book._id
+        }
+    };
 }
 
 exports.BookRestApi = BookRestApi;
