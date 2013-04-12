@@ -13,6 +13,7 @@ var Search = require('./book-search.js').Search;
 function BookRestApi() {
     bookProvider = new BookProvider();
     searchProvider = new Search();
+    self = this;
 
     /**
      * Retuns all the books from the storage. Should be used with care. Apply paging later?
@@ -64,8 +65,8 @@ function BookRestApi() {
      */
     this.searchForBooks = function (req, res) {
         if (!req.query.q) {
-            console.log('Should not send empty queries. Correct client.')
-            res.send("[]");
+            self.findAllBooks(req, res);
+            return;
         }
         var qryObj = {
             "query": {
