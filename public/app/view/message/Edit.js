@@ -16,25 +16,25 @@ Ext.define('ExtJsSample.view.message.Edit', {
                 items: [
                     {
                         xtype: 'textfield',
-                        name: 'title',
+                        name: 'Title',
                         allowBlank: false,
                         fieldLabel: 'Title'
                     },
                     {
                         xtype: 'textfield',
-                        name: 'text',
+                        name: 'Text',
                         allowBlank: false,
                         fieldLabel: 'Text'
                     },
                     {
                         xtype: 'textfield',
-                        name: 'author',
+                        name: 'Author',
                         allowBlank: false,
                         fieldLabel: 'Author'
                     },
                     {
                         xtype: 'textfield',
-                        name: 'tags',
+                        name: 'Tags',
                         allowBlank: false,
                         fieldLabel: 'Tags'
                     }

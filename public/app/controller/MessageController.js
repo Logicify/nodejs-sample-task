@@ -10,7 +10,6 @@ Ext.define('ExtJsSample.controller.MessageController', {
 
     views: [
         'message.List',
-        'message.Create',
         'message.Edit'
     ],
     init: function () {
@@ -18,17 +17,14 @@ Ext.define('ExtJsSample.controller.MessageController', {
             'messageList > gridpanel': {
                 itemdblclick: this.editMessage
             },
-            'messageList > button[action=create]': {
-                click: this.onCreateMessage
+            'messageList > button[action=createNewRecord]': {
+                click: this.createMessage
             },
             'messageList > button[action=search]': {
                 click: this.onSearch
             },
-            'messageCreate button[action=save]': {
-                click: this.doCreateMessage
-            },
             'messageEdit button[action=save]': {
-                click: this.doUpdateMessage
+                click: this.doSaveMessage
             }
         });
     },
@@ -38,10 +34,9 @@ Ext.define('ExtJsSample.controller.MessageController', {
         view.down('form').loadRecord(record);
     },
 
-    onCreateMessage: function () {
-        var view = Ext.widget('messageCreate');
+    createMessage: function () {
+        Ext.widget('messageEdit');
     },
-
 
     onSearch: function () {
         var store = Ext.getStore("MessageStore");
@@ -50,25 +45,23 @@ Ext.define('ExtJsSample.controller.MessageController', {
         })
     },
 
-    doCreateMessage: function (button) {
-        var win = button.up('window'),
-            form = win.down('form'),
-            values = form.getValues(),
-            store = Ext.getStore("MessageStore");
-        if (form.getForm().isValid()) {
-            store.add(values);
-            win.close();
-        }
-    },
-
-    doUpdateMessage: function (button) {
+    doSaveMessage: function (button) {
         var win = button.up('window'),
             form = win.down('form'),
             record = form.getRecord(),
             values = form.getValues(),
             store = Ext.getStore("MessageStore");
+        if (values.Tags) {
+            values.Tags = values.Tags.split(",");
+        }
         if (form.getForm().isValid()) {
-            record.set(values);
+            if (record) {
+                // as we edit the whole object, we just can exchange IDs and voila.
+                values._id = record.data._id;
+                record.set(values);
+            } else {
+                store.add(values);
+            }
             win.close();
         }
     }

@@ -47,16 +47,15 @@ Ext.define('ExtJsSample.view.message.List', {
                         { header: 'Author', dataIndex: 'Author', width: 100 },
                         { header: 'Tags', dataIndex: 'Tags', width: 150 },
                         { header: 'Text', dataIndex: 'Text', flex: 1 }
-
                     ]
                 },
                 {
                     xtype: 'button',
-                    action: 'create',
+                    action: 'createNewRecord',
                     x: 10,
                     y: 440,
                     width: 150,
-                    text: 'Create'
+                    text: 'Create New Record'
 
                 }
             ]
