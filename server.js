@@ -51,7 +51,7 @@ app.post('/rest/newBook', function (req, res) {
                 "name": bookSaved.name,
                 "text": [bookSaved.Text, bookSaved.Title, bookSaved.Author, bookSaved.Tags.join(" ")].join(" "),
                 "id": bookSaved._id
-            }
+            };
             search.index('book', 'document', querySave, null, null, function (data) {
                 console.info(JSON.stringify(data));
                 bookId = data._id
