@@ -1,7 +1,7 @@
 Ext.define('ExtJsSample.store.MessageStore', {
     extend: 'Ext.data.Store',
     model: 'ExtJsSample.model.Message',
-    autoLoad: false,
+    autoLoad: true,
     autoSync: true,
     proxy: {
         type: 'ajax',

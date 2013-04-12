@@ -71,6 +71,7 @@ Ext.define('ExtJsSample.controller.MessageController', {
             values.Tags = values.Tags.split(",");
         }
         if (form.getForm().isValid()) {
+            Ext.ComponentQuery.query('#messageListPanel [name=searchField]')[0].setValue("");
             if (record) {
                 // as we edit the whole object, we just can exchange IDs and voila.
                 values._id = record.data._id;
@@ -78,6 +79,7 @@ Ext.define('ExtJsSample.controller.MessageController', {
             } else {
                 store.add(values);
             }
+            store.load();
             win.close();
         }
     }
