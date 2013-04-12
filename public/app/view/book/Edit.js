@@ -1,7 +1,7 @@
-Ext.define('ExtJsSample.view.message.Edit', {
+Ext.define('ExtJsSample.view.book.Edit', {
     extend: 'Ext.window.Window',
-    alias: 'widget.messageEdit',
-    id: 'messageEditPanel',
+    alias: 'widget.bookEdit',
+    id: 'bookEditPanel',
     layout: 'fit',
     autoShow: true,
     initComponent: function () {

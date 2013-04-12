@@ -1,6 +1,6 @@
-Ext.define('ExtJsSample.store.MessageStore', {
+Ext.define('ExtJsSample.store.BookStore', {
     extend: 'Ext.data.Store',
-    model: 'ExtJsSample.model.Message',
+    model: 'ExtJsSample.model.Book',
     autoLoad: true,
     autoSync: true,
     proxy: {

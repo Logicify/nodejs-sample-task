@@ -3,13 +3,13 @@ Ext.application({
     name: 'ExtJsSample',
     appFolder: 'app',
     controllers: [
-        'MessageController'
+        'BookController'
     ],
     launch: function () {
         Ext.create('Ext.container.Viewport', {
             layout: 'auto',
             items: {
-                xtype: 'messageList'
+                xtype: 'bookList'
             }
         });
     }

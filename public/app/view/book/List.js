@@ -1,10 +1,10 @@
-Ext.define('ExtJsSample.view.message.List', {
+Ext.define('ExtJsSample.view.book.List', {
     extend: 'Ext.form.Panel',
-    alias: 'widget.messageList',
-    id: 'messageListPanel',
+    alias: 'widget.bookList',
+    id: 'bookListPanel',
 
     title: 'Book management system',
-    store: 'MessageStore',
+    store: 'BookStore',
 
     height: 500,
     width: 620,
@@ -44,7 +44,7 @@ Ext.define('ExtJsSample.view.message.List', {
                 },
                 {
                     xtype: 'gridpanel',
-                    store: 'MessageStore',
+                    store: 'BookStore',
                     x: 10,
                     y: 50,
                     width: 600,
