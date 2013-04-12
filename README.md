@@ -29,6 +29,6 @@ http://www.elasticsearch.org/download/
 
 run elasticsearch server
 
-`node search.js`
+`node book-search.js`
 
 /********** END **********/

@@ -1,12 +1,8 @@
 var express = require('express');
-
-var BookProvider = require('./bookprovider.js').BookProvider;
-var Search = require('./search.js').Search;
-
 var app = express();
 
-var bookProvider = new BookProvider();
-var search = new Search();
+var BookRestApi = require('./book/book-rest-api.js').BookRestApi;
+var bookRestApi = new BookRestApi();
 
 //Configuration for errorHandler and others.
 app.configure(function () {
@@ -22,91 +18,14 @@ app.configure('production', function () {
     app.use(express.errorHandler());
 });
 
-
 // mounting REST endpoints. All the other urls would be handled by static (coming from public folder).
+app.get('/rest/allBooks', bookRestApi.findAllBooks);
+app.post('/rest/newBook', bookRestApi.newBook);
+app.get('/rest/search', bookRestApi.searchForBooks);
+app.post('/rest/update', bookRestApi.update);
 
-// to get all the books -- testing.
-app.get('/rest/allBooks', function (req, res) {
-    bookProvider.findAll(function (error, data) {
-        if (error) {
-            res.send(JSON.stringify({"error": error}))
-        } else {
-            res.send(JSON.stringify(data));
-        }
-    });
-});
-//Update records
-app.post('/rest/update', function (req, res) {
-
-    bookProvider.update(req.body,function(err,data){
-        if (err) {
-            res.send(400, 'Error saving book!');
-        }
-        else{
-            res.send(data);
-        }
-    })
-});
-// to submit a new book for storage.
-app.post('/rest/newBook', function (req, res) {
-    if (!req.body) {
-        res.send(400, "Wrong format - maybe malformed json?");
-        return;
-    }
-
-    bookProvider.save(req.body, function (error, bookSaved) {
-        if (error) {
-            res.send(400, 'Error saving book!');
-        } else {
-            res.send('OKAY, saved book.');
-            var querySave = {
-                "name": bookSaved.name,
-                "text": [bookSaved.Text, bookSaved.Title, bookSaved.Author, bookSaved.Tags.join(" ")].join(" "),
-                "id": bookSaved._id
-            };
-            search.index('book', 'document', querySave, null, null, function (data) {
-                console.info(JSON.stringify(data));
-                bookId = data._id
-            })
-        }
-    })
-});
-
-
-app.get('/rest/search', function (req, res) {
-    var qryObj = {
-        "query": {
-            "query_string": {
-                "query": req.query.q
-            }
-        }
-    };
-    search.search('book', 'document', qryObj, null, function (data) {
-        var elasticResponse = JSON.parse(data);
-        if (elasticResponse.error) {
-            console.log('Error from Bonsai: ' + data);
-            res.send(500, "Error");
-            return;
-        }
-        var hits = elasticResponse.hits.hits;
-        console.log(hits.length + " hits found for query " + req.query.id)
-        var ids = hits.map(function (hit) {
-            return hit._source.id;
-        });
-        bookProvider.findByIds(ids, function (err, data) {
-            if (err) {
-                res.send(500, "Error");
-                return;
-            }
-            res.send(data)
-        });
-
-    });
-});
-
+// Binding to port provided by Heroku, or to the default one.
 var portToListenTo = process.env.PORT || 3000;
-console.log('About to listen on port ' + portToListenTo);
-
 app.listen(portToListenTo);
 console.log('Listening on port ' + portToListenTo);
 

@@ -44,7 +44,6 @@ Ext.define('ExtJsSample.controller.MessageController', {
 
 
     onSearch: function () {
-        var form = win.down('form');
         var store = Ext.getStore("MessageStore");
         store.load({
             params: {q: 'alice'}

@@ -1,6 +1,12 @@
 var ElasticSearchClient = require('elasticsearchclient');
 
+/**
+ * Search api provider for books.
+ *
+ * @constructor default
+ */
 Search = function () {
+    //TODO: generify it, as we'll have other types of objects.
     var bonsaiHost;
     var serverOptions = {
         host: "localhost",

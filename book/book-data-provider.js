@@ -5,12 +5,17 @@ var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
-var config = require("./config.json");
+var config = require("./../config.json");
 
 
-console.log("Getting data provider configuration.");
-
+/**
+ * Data provier for books (mongo). Takes configuration either from config.json or the env variable of mongolab given
+ * by heroku.
+ *
+ * @constructor default
+ */
 BookProvider = function () {
+    //TODO: generify it to support other data providers.
     var username;
     var password;
 
@@ -118,6 +123,27 @@ BookProvider.prototype.findByIds = function (ids, callback) {
             });
         }
     })
+};
+
+BookProvider.prototype.update = function (book, callback) {
+    this.getCollection(function (error, collection) {
+        if (error) {
+            callback(error)
+        }
+        else {
+
+            collection.update({_id: ObjectID.createFromHexString(book._id)}, {$set: {"Title": book.Title, "Text": book.Text, "Tags": book.Tags, "Author": book.Author}}, null,
+                function (err, updated) {
+                    if (err) {
+                        console.log("Book not updated.");
+                        callback(err);
+                    }
+                    else {
+                        callback(err, updated)
+                    }
+                });
+        }
+    });
 };
 
 exports.BookProvider = BookProvider;
