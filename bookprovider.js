@@ -17,7 +17,7 @@ BookProvider = function () {
     var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL;
     if (mongoUri) {
         // parsing mongoLab, if any
-        var match = /mongodb:\/\/(\w+):(\w+)@([\w\.]+):(\d+)\/(\w+)/g.exec(mongoUri)
+        var match = /mongodb:\/\/(\w+):(\w+)@([\w\.]+):(\d+)\/(\w+)/g.exec(mongoUri);
         username = match[1];
         password = match[2];
         config.mongoHost = match[3];

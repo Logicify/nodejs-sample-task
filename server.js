@@ -70,14 +70,20 @@ app.get('/rest/search', function (req, res) {
         }
     };
     search.search('book', 'document', qryObj, null, function (data) {
-        var hits = JSON.parse(data).hits.hits;
+        var elasticResponse = JSON.parse(data);
+        if (elasticResponse.error) {
+            console.log('Error from Bonsai: ' + data);
+            res.send(500, "Error");
+            return;
+        }
+        var hits = elasticResponse.hits.hits;
         console.log(hits.length + " hits found for query " + req.query.id)
         var ids = hits.map(function (hit) {
             return hit._source.id;
         });
         bookProvider.findByIds(ids, function (err, data) {
             if (err) {
-                res.send("Error");
+                res.send(500, "Error");
                 return;
             }
             res.send(data)

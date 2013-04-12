@@ -1,11 +1,23 @@
 var ElasticSearchClient = require('elasticsearchclient');
 
 Search = function () {
-    console.log("Env var for bonsai is " + process.env.BONSAI_URL);
+    var bonsaiHost;
     var serverOptions = {
-        host: process.env.BONSAI_URL || "localhost",
+        host: "localhost",
         port: 9200
     };
+
+    if (process.env.BONSAI_URL) {
+        bonsaiHost = process.env.BONSAI_URL;
+        var match = /http:\/\/(\w+):(\w+)@(.+)/g.exec(bonsaiHost);
+
+        serverOptions.auth = match[1] + ":" + match[2];
+        serverOptions.host = match[3];
+        serverOptions.port = 80;
+
+        console.log("Env var for bonsai is " + bonsaiHost);
+        console.log("Server options are  " + JSON.stringify(serverOptions));
+    }
 
     this.elasticSearchClient = new ElasticSearchClient(serverOptions);
 };
