@@ -112,7 +112,6 @@ BookProvider.prototype.update = function (book, callback) {
             callback(error)
         }
         else {
-
             collection.update({_id: ObjectID.createFromHexString(book._id)}, {$set: {"Title": book.Title, "Text": book.Text, "Tags": book.Tags, "Author": book.Author}}, null,
                 function (err, updated) {
                     if (err) {
