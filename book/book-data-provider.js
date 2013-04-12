@@ -106,20 +106,26 @@ BookProvider.prototype.findByIds = function (ids, callback) {
     })
 };
 
-BookProvider.prototype.update = function (book, callback) {
+BookProvider.prototype.update = function (bookUpdate, callback) {
     this.getCollection(function (error, collection) {
         if (error) {
             callback(error)
         }
         else {
-            collection.update({_id: ObjectID.createFromHexString(book._id)}, {$set: {"Title": book.Title, "Text": book.Text, "Tags": book.Tags, "Author": book.Author}}, null,
+            var id = bookUpdate._id;
+            delete bookUpdate._id;
+            collection.findAndModify(
+                {_id: ObjectID.createFromHexString(id)},
+                [],
+                {$set: bookUpdate},
+                {},
                 function (err, updated) {
                     if (err) {
                         console.log("Book not updated.");
                         callback(err);
                     }
                     else {
-                        callback(err, updated)
+                        callback(err, updated);
                     }
                 });
         }

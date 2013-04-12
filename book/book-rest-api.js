@@ -36,7 +36,6 @@ function BookRestApi() {
      * @param res express response
      */
     this.newBook = function (req, res) {
-        //TODO: add validity check so that no freeform JSON may be stored.
         if (!req.body) {
             res.send(500, "Wrong format - maybe malformed json?");
             return;
@@ -44,14 +43,13 @@ function BookRestApi() {
 
         bookProvider.save(req.body, function (error, bookSaved) {
             if (error) {
-                console.log('Error saving book. Mongodb: ' + error)
+                console.log('Error saving book. Mongodb: ' + error);
                 res.send(500, 'Error saving book!');
             } else {
-                res.send('OKAY, saved book.');
-
-                searchProvider.index('book', 'document', elasticSearch(req.body), null, null, function (data) {
+                searchProvider.index('book', 'document', elasticSearch(bookSaved), null, null, function (data) {
                     console.info(JSON.stringify(data));
-                })
+                });
+                res.send(JSON.stringify(bookSaved));
             }
         })
     };
@@ -107,13 +105,13 @@ function BookRestApi() {
                 res.send(500, 'Error saving book!');
             }
             else {
+                searchProvider.index('book', 'document', elasticSearch(req.body), null, null, function (data) {
+                    console.info(JSON.stringify(data));
+                });
+
                 res.send(data);
             }
         });
-
-        searchProvider.index('book', 'document',  elasticSearch(req.body), null, null, function (data) {
-            console.info(JSON.stringify(data));
-        })
     };
     var elasticSearch = function (book) {
         return {
