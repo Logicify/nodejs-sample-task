@@ -68,16 +68,38 @@ BookProvider.prototype.save = function (book, callback) {
             callback(error);
         } else {
             book.inserted_at = new Date();
-            if (book.tags === undefined) book.tags = [];
+
+            if (!book.tags) {
+                book.tags = [];
+            }
             for (var j = 0; j < book.tags.length; j++) {
                 book.comments[j].inserted_at = new Date();
             }
-
             collection.insert(book, function () {
                 callback(null, book);
             });
         }
     });
 };
+
+BookProvider.prototype.findByIds = function (ids, callback) {
+    this.getCollection(function (error, collection) {
+        if (error) {
+            callback(error);
+        } else {
+            var objectIds = ids.map(function (id) {
+                return ObjectID.createFromHexString(id);
+            });
+            var mongoDbQuery = {
+                _id: {
+                    $in: objectIds
+                }
+            };
+            collection.find(mongoDbQuery).toArray(function (err, docs) {
+                callback(err, docs);
+            });
+        }
+    })
+}
 
 exports.BookProvider = BookProvider;

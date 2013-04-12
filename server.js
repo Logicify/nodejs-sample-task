@@ -1,10 +1,12 @@
-var BookProvider = require('./bookprovider.js').BookProvider;
 var express = require('express');
-var elasticSearch = require('./elastic/elastic_search.js');
+
+var BookProvider = require('./bookprovider.js').BookProvider;
+var Search = require('./search.js').Search;
 
 var app = express();
 
 var bookProvider = new BookProvider();
+var search = new Search();
 
 //Configuration for errorHandler and others.
 app.configure(function () {
@@ -33,9 +35,8 @@ app.get('/rest/allBooks', function (req, res) {
         }
     });
 });
-var bookId
 // to submit a new book for storage.
-app.get('/rest/newBook', function (req, res) {
+app.post('/rest/newBook', function (req, res) {
     if (!req.body) {
         res.send(400, "Wrong format - maybe malformed json?");
         return;
@@ -46,14 +47,14 @@ app.get('/rest/newBook', function (req, res) {
             res.send(400, 'Error saving book!');
         } else {
             res.send('OKAY, saved book.');
-            var querySave= {
-                "name":bookSaved.name,
-                 "text": bookSaved.tags,
+            var querySave = {
+                "name": bookSaved.name,
+                "text": [bookSaved.Text, bookSaved.Title, bookSaved.Author, bookSaved.Tags.join(" ")].join(" "),
                 "id": bookSaved._id
             }
-            elasticSearch.index('book', 'document', querySave ,null,null,function (data) {
+            search.index('book', 'document', querySave, null, null, function (data) {
                 console.info(JSON.stringify(data));
-                bookId=data._id
+                bookId = data._id
             })
         }
     })
@@ -68,8 +69,20 @@ app.get('/rest/search', function (req, res) {
             }
         }
     };
-    elasticSearch.search('book', 'document', qryObj,null,function (data) {
-        res.send(data)
+    search.search('book', 'document', qryObj, null, function (data) {
+        var hits = JSON.parse(data).hits.hits;
+        console.log(hits.length + " hits found for query " + req.query.id)
+        var ids = hits.map(function (hit) {
+            return hit._source.id;
+        });
+        bookProvider.findByIds(ids, function (err, data) {
+            if (err) {
+                res.send("Error");
+                return;
+            }
+            res.send(data)
+        });
+
     });
 });
 
