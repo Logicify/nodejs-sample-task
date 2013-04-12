@@ -65,7 +65,7 @@ app.get('/rest/search', function (req, res) {
     var qryObj = {
         "query": {
             "query_string": {
-                "query": req.query.id
+                "query": req.query.q
             }
         }
     };

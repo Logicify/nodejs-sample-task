@@ -38,7 +38,6 @@ BookProvider = function () {
                 }
             });
         }
-
     });
 };
 
