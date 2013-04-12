@@ -79,7 +79,6 @@ Ext.define('ExtJsSample.controller.BookController', {
             } else {
                 store.add(values);
             }
-            store.load();
             Ext.Msg.show({
                 title: 'Changes saved',
                 msg: 'Changes saved successfully',
