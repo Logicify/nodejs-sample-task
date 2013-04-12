@@ -33,12 +33,22 @@ Ext.define('ExtJsSample.controller.MessageController', {
     },
 
     editMessage: function (grid, record) {
-        var view = Ext.widget('messageEdit');
-        view.down('form').loadRecord(record);
+        var view = Ext.ComponentQuery.query('#messageEditPanel')[0];
+        if (!view) {
+            view = Ext.widget('messageEdit');
+        }
+        view.down('form').getForm().loadRecord(record);
+        view.setTitle('Edit book info');
+
     },
 
     createMessage: function () {
-        Ext.widget('messageEdit');
+        var view = Ext.ComponentQuery.query('#messageEditPanel')[0];
+        if (!view) {
+            view = Ext.widget('messageEdit');
+        }
+        view.down('form').getForm().reset();
+        view.setTitle('Create new book');
     },
 
     onSearch: function () {
