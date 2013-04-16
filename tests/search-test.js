@@ -1,5 +1,9 @@
-
 var Search = require('../book/book-search.js').Search;
+var should = require("chai");
+
+var indexName = 'book';
+var objName = 'document';
+var json= {"id": "testId", name: "testName",text:"testText"};
 
 describe("ElasticSearchClient Cluster apis", function () {
 
@@ -9,18 +13,35 @@ describe("ElasticSearchClient Cluster apis", function () {
         setTimeout(done, 50);
     });
 
-    describe("#index", function () {
-        var book = {
-            "name": "test",
-            "text": 'test test test test',
-            "id": '11111111111111111111111'
-        };
+    describe("#Elastic", function () {
 
-        it('should be create new record in a elasticSearch ', function (done) {
-            searchProvider.index('book', book, book.id, null, function (data) {
-
+        it('should be create new record', function (done) {
+            searchProvider.index(indexName, objName, json, 'indexId', null, function (data) {
+                done();
             });
-            done();
+        });
+
+        it('should be search test record ', function (done) {
+            var qryObj = {
+                "query" : {
+                    "term" : { "name" : "test" }
+                }
+            };
+            searchProvider.search(indexName, objName,qryObj, null, function (data) {
+                data = JSON.parse(data);
+                data.should.be.ok;
+                done();
+            });
+        });
+
+        it('should be update test record ', function (done) {
+            searchProvider.update(indexName, objName, "indexId", {doc: {tags: "testTags"}}, function (data) {
+                data = JSON.parse(data);
+                data.should.be.ok;
+                data._id.should.equal("indexId");
+                done();
+            });
         });
     });
+
 });
