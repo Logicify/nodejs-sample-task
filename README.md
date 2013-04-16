@@ -36,7 +36,7 @@ run elasticsearch server
 ### Test project
 Go to the directory
 
-{project}/node_modules/.bin
+`{project}`/node_modules/.bin
 execute command
 * mocha --require should --reporter spec ../../tests
 
