@@ -29,3 +29,5 @@ var portToListenTo = process.env.PORT || 3000;
 app.listen(portToListenTo);
 console.log('Listening on port ' + portToListenTo);
 
+module.exports = app;
+
