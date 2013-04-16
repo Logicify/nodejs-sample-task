@@ -7,6 +7,12 @@
         "express": "3.1.1",
         "mongodb": "1.1.11",
         "elasticsearchclient": ">=0.2.1"
+
+    },
+    "devDependencies": {
+        "mocha": "1.7.0",
+        "should": "1.2.1",
+        "supertest": "0.4.0"
     }
 }
 
