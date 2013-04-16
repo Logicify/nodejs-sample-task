@@ -9,7 +9,7 @@ application. Connect to the database specified there with a mongo console, and g
 
 Then, carry on to building application. First, run
 
-`npm install`
+ * `npm install`
 
 This will install the dependencies. Then,
 
@@ -18,10 +18,11 @@ This will install the dependencies. Then,
 Which runs the server.
 
 
-/****** Elastic Search ******/
+---
+### Elastic Search
 install to project
 
-npm install elasticsearch client
+ * npm install elasticsearch client
 
 Download Elastic Search server 
 
@@ -31,4 +32,14 @@ run elasticsearch server
 
 `node book-search.js`
 
-/********** END **********/
+---
+### Test project
+Go to the directory
+
+{project}/node_modules/.bin
+execute command
+* mocha --require should --reporter spec ../../tests
+
+
+
+

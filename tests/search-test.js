@@ -3,7 +3,7 @@ var should = require("chai");
 
 var indexName = 'book';
 var objName = 'document';
-var json= {"id": "testId", name: "testName",text:"testText"};
+var json = {"id": "testId", name: "testName", text: "testText"};
 
 describe("ElasticSearchClient Cluster apis", function () {
 
@@ -23,11 +23,11 @@ describe("ElasticSearchClient Cluster apis", function () {
 
         it('should be search test record ', function (done) {
             var qryObj = {
-                "query" : {
-                    "term" : { "name" : "test" }
+                "query": {
+                    "term": { "name": "test" }
                 }
             };
-            searchProvider.search(indexName, objName,qryObj, null, function (data) {
+            searchProvider.search(indexName, objName, qryObj, null, function (data) {
                 data = JSON.parse(data);
                 data.should.be.ok;
                 done();
