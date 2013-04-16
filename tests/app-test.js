@@ -18,7 +18,7 @@ describe('Server App testing', function () {
     });
     it('#Search', function (done) {
         request(app)
-            .get('/rest/search')
+            .get('/rest/search?q=Sample title')
             .expect(200, done)
     });
     it('#AllBooks ', function (done) {
