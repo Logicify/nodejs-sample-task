@@ -1,4 +1,6 @@
-var BookProvider = require('../book/book-data-provider.js').BookProvider;
+var BookProvider = process.env['APP_COV']
+    ? require('../book-cov/book-data-provider.js').BookProvider
+    : require('../book/book-data-provider.js').BookProvider;
 var should = require("chai");
 var bookProvider = new BookProvider();
 
@@ -7,7 +9,6 @@ var testBook = {
     "Text": "Sample text",
     "Author": "Chris Colman",
     "Tags": ["a", "b"]
-
 };
 describe("REST API test", function () {
 
