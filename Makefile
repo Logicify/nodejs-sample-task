@@ -1,17 +1,12 @@
-FixPath = $(subst /,\,$1)
-
-NODE_MODULES := ./node_modules/.bin/
-
+MOCHA = ./node_modules/.bin/mocha
 test:
-   set APP_COV=0
-   $(call FixPath, NODE_MODULES)mocha --require should --reporter spec tests
-
-test-cov: app-cov
-     set APP_COV=1
-     $(call FixPath, NODE_MODULES)mocha --reporter html-cov > coverage.html tests
-app-cov:
-    rm -rf book-cov
-    rm -rf coverage.html
-    @jscoverage book book-cov
-
+    @NODE_ENV=test $(MOCHA) \
+        -r should \
+        -R spec
+test-cov:lib-cov
+    @APP_COV=1 $(MOCHA) \
+        -r should \
+        -R html-cov > coverage.html
+lib-cov:
+    @jscoverage --encoding=utf8 --no-highlight lib lib-cov
 .PHONY: test test-cov
