@@ -1,9 +1,10 @@
-Ext.define('ExtJsSample.view.book.Edit', {
+Ext.define('BM.view.book.Edit', {
     extend: 'Ext.window.Window',
     alias: 'widget.bookEdit',
-    id: 'bookEditPanel',
+
     layout: 'fit',
     autoShow: true,
+
     initComponent: function () {
         this.items = [
             {

@@ -1,16 +1,13 @@
 Ext.Loader.setConfig({ enabled: true });
 Ext.application({
-    name: 'ExtJsSample',
+    requires: ['Ext.container.Viewport'],
+
+    name: 'BM',
     appFolder: 'app',
-    controllers: [
-        'BookController'
-    ],
-    launch: function () {
-        Ext.create('Ext.container.Viewport', {
-            layout: 'auto',
-            items: {
-                xtype: 'bookList'
-            }
-        });
-    }
+
+    autoCreateViewport: true,
+
+    models: ['Book'],
+    controllers: ['Books'],
+    stores: ['Books']
 });
