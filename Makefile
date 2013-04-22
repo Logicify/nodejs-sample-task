@@ -14,7 +14,7 @@ test:
 test-cov: lib-cov
 	@APP_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
 
-lib-cov:
+lib-cov: clean
 	@jscoverage book book-cov
 
 clean:
