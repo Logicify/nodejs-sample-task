@@ -35,6 +35,15 @@ var RESPONSE_403 = {
     }
 };
 
+var RESPONSE_500 = {
+    responseCode: 500,
+    status: {
+        errorCode: 500,
+        errorMessage: 'Internal Server Error'
+    }
+};
+
+
 /**
  * Middleware entry point.
  * Perform access check.
@@ -42,33 +51,65 @@ var RESPONSE_403 = {
  * @type {Function}
  */
 module.exports = function (options) {
-    //TODO provide excluded paths (without authorisation)
-    //TODO provide callbacks for autenticate and authorise
     var loginUrl = options.loginUrl;
+    var logoutUrl = options.logoutUrl;
+    var excludeUrls = options.excludeUrls;
 
     return function (req, res, next) {
-        if (req.path === loginUrl) {
-            if (authenticate(req, res)) {
+        var path = req.path;
+
+        //exclude urls filtering
+        for (var i = 0; i < excludeUrls.length; i++) {
+            if (new RegExp(excludeUrls[i], "g").test(path)) {
+                //authorisation not required
+                //process next in chain
+                next();
+                return;
+            }
+        }
+
+        //login url filtering
+        if (path === loginUrl) {
+            if (doLogin(req, res)) {
                 //successful auth check,
-                //end life-circle and allow next already authorised request
-                //with data processing
+                //end life-circle and allow next request (authorised)
                 console.warn(
                     new Date().toLocaleTimeString() +
-                    util.format(" SID=%s", req.sessionID) +
-                    util.format(" Authentication success for user %s", getSessionUserId(req))
+                        util.format(" SID=%s", req.sessionID) +
+                        util.format(" Login success for user %s", getSessionUserId(req))
                 );
                 return;
             } else {
-                //cannot authenticate
+                //cannot login
                 console.error(
                     new Date().toLocaleTimeString() +
                         util.format(" SID=%s", req.sessionID) +
-                        util.format(" Authentication failed for user %s", null)
+                        util.format(" Login failed for user %s", null)
                 );
                 return;
             }
         }
 
+        //logout url filtering
+        if (path === logoutUrl) {
+            //var sessionId=
+            if (doLogout(req, res)) {
+                //successful logout
+                //end life-circle and allow next request (unauthorised)
+                console.warn(
+                    new Date().toLocaleTimeString() +
+                        util.format(" SID=%s", req.sessionID) +
+                        util.format(" Logout success, session destroyed")
+                );
+                return;
+            } else {
+                //has no authenticated session
+                return;
+            }
+        }
+
+
+        //common processing
         if (checkAuthentication(req, res)) {
             //authentication passed successfully,
             //get authorisation data (ACL)
@@ -112,9 +153,11 @@ function checkAuthentication(req, res) {
  * @param res
  * @return true, if authentication pass, false otherwise
  */
-function authenticate(req, res) {
+function doLogin(req, res) {
     //already authenticated
     if (getSessionUserId(req) != null) {
+        res.status(RESPONSE_200.responseCode);
+        res.json(RESPONSE_200.status);
         return true;
     }
 
@@ -126,18 +169,41 @@ function authenticate(req, res) {
     }
 
     //validate login credentials
-    //TODO provide correct validation logic
-    if ("admin" != req.body.username || "password" != req.body.password) {
+    var user = findUserByNameAndPassword(req.body.username, req.body.password);
+    if (user == null) {
         res.status(RESPONSE_403.responseCode);
         res.json(RESPONSE_403.status);
         return false;
     }
 
-    setSessionUserId(1);
+    setSessionUserId(req, user.userId);
 
     res.status(RESPONSE_200.responseCode);
     res.json(RESPONSE_200.status);
     return true;
+}
+
+function doLogout(req, res) {
+    var logoutStatus = false;
+    if (getSessionUserId(req)) {
+        req.session.destroy(function (err) {
+            //cannot destroy session doe to
+            //some internal error
+            res.status(RESPONSE_500.responseCode);
+            res.json(RESPONSE_500.status);
+            console.error(
+                new Date().toLocaleTimeString() +
+                    util.format(" SID=%s", req.sessionID) +
+                    util.format(" Cannot destroy session due to internal error\n>> %s", err)
+            );
+            return false;
+        });
+        logoutStatus = true;
+    }
+    res.status(RESPONSE_200.responseCode);
+    res.json(RESPONSE_200.status);
+
+    return logoutStatus;
 }
 
 /**
@@ -171,5 +237,21 @@ function getSessionUserId(req) {
  */
 function setSessionUserId(req, userId) {
     req.session.userId = userId;
+}
+
+/**
+ * Find user by username and password.
+ *
+ * @param username
+ * @param password
+ * @returns user instance if exist, null otherwise
+ */
+function findUserByNameAndPassword(username, password) {
+    //TODO add DB logic
+    if ("admin" != username || "password" != password) {
+        return null;
+    }
+
+    return {userId: 1};
 }
 
