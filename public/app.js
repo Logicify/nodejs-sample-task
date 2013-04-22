@@ -8,6 +8,6 @@ Ext.application({
     autoCreateViewport: true,
 
     models: ['Book'],
-    controllers: ['Books'],
+    controllers: ['Books', 'Login'],
     stores: ['Books']
 });

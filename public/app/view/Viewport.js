@@ -7,13 +7,14 @@ Ext.define('BM.view.Viewport', {
 
         requires: [
             'BM.view.book.List',
-            'BM.view.book.Edit'
+            'BM.view.book.Edit',
+            'BM.view.auth.Login'
         ],
 
         initComponent: function () {
             this.items = [
                 {
-                    xtype: 'bookList'
+                    xtype: 'login'
                 }
             ];
 

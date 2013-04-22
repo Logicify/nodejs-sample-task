@@ -1,8 +1,8 @@
 Ext.define('BM.store.Books', {
     extend: 'Ext.data.Store',
     model: 'BM.model.Book',
-    autoLoad: true,
-    autoSync: true,
+    autoLoad: false,
+    autoSync: false,
     proxy: {
         type: 'ajax',
         pageParam: false,
