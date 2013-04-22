@@ -1,12 +1,24 @@
-MOCHA = ./node_modules/.bin/mocha
+
+MOCHA_OPTS=tests
+REPORTER = spec
+
+check: test
+
 test:
-    @NODE_ENV=test $(MOCHA) \
-        -r should \
-        -R spec
-test-cov:lib-cov
-    @APP_COV=1 $(MOCHA) \
-        -r should \
-        -R html-cov > coverage.html
+	@NODE_ENV=test ./node_modules/.bin/mocha \
+        --require should\
+		--reporter $(REPORTER) \
+		$(MOCHA_OPTS)
+
+
+test-cov: lib-cov
+	@APP_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
+
 lib-cov:
-    @jscoverage --encoding=utf8 --no-highlight lib lib-cov
-.PHONY: test test-cov
+	@jscoverage book book-cov
+
+clean:
+	rm -f coverage.html
+	rm -fr book-cov
+
+.PHONY: test clean
