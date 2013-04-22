@@ -92,7 +92,6 @@ module.exports = function (options) {
 
         //logout url filtering
         if (path === logoutUrl) {
-            //var sessionId=
             if (doLogout(req, res)) {
                 //successful logout
                 //end life-circle and allow next request (unauthorised)
@@ -184,9 +183,16 @@ function doLogin(req, res) {
 }
 
 function doLogout(req, res) {
-    var logoutStatus = false;
-    if (getSessionUserId(req)) {
-        req.session.destroy(function (err) {
+    if (!getSessionUserId(req)) {
+        res.status(RESPONSE_200.responseCode);
+        res.json(RESPONSE_200.status);
+
+        return false;
+    }
+
+    var returnFlag = true;
+    req.session.destroy(function (err) {
+        if (err != null) {
             //cannot destroy session doe to
             //some internal error
             res.status(RESPONSE_500.responseCode);
@@ -196,14 +202,14 @@ function doLogout(req, res) {
                     util.format(" SID=%s", req.sessionID) +
                     util.format(" Cannot destroy session due to internal error\n>> %s", err)
             );
-            return false;
-        });
-        logoutStatus = true;
-    }
-    res.status(RESPONSE_200.responseCode);
-    res.json(RESPONSE_200.status);
+            returnFlag = false;
+        } else {
+            res.status(RESPONSE_200.responseCode);
+            res.json(RESPONSE_200.status);
+        }
+    });
 
-    return logoutStatus;
+    return returnFlag;
 }
 
 /**

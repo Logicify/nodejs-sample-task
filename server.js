@@ -30,9 +30,7 @@ app.post('/rest/newBook', bookRestApi.newBook);
 app.get('/rest/search', bookRestApi.searchForBooks);
 app.post('/rest/update', bookRestApi.update);
 app.get('/rest/aa', function (req, res, next) {
-    res.send({
-        "status": "Auth error: wrong username or password.",
-        "code": 403});
+    res.send('Hello!');
 });
 
 // Binding to port provided by Heroku, or to the default one.
