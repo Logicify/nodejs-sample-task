@@ -16,6 +16,8 @@ You can see the app instance on [http://http://nodejs-sample-task.logicify.com/]
  * Elasticsearch (last version)
  * Node v0.10 with npm
 
+ Details about installation of these can be found on [Prerequisites] page
+
 ## Building and installing
 Prepare the data for the database. Look into the `config.json` for the database name which will be used by an
 application. Connect to the database specified there with a mongo console, and get the `mongodb/mongo-sample-data.js`
@@ -36,21 +38,6 @@ node server.js
 Which runs the server. On the command line where you ran the node, you will observe the notice with the URL the app is
 accessible on. Visit that URL in browser, and you are in!
 
----
-### Elastic Search
-install to project
-
- * npm install elasticsearch client
-
-Download Elastic Search server 
-
-http://www.elasticsearch.org/download/
-
-run elasticsearch server
-
-`node book-search.js`
-
----
 ### Test project
 Don't forget to invoke `npm install -d` Go to the directory
 
@@ -68,5 +55,3 @@ nothing of Node.js neither of any other technology used here:)
  * Vadim Didenko
  * Igor Cherednichenko
  * Alex Cherednichenko
-
-
