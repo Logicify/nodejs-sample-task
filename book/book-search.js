@@ -1,4 +1,5 @@
-var ElasticSearchClient = require('elasticsearchclient');
+var ElasticSearchClient = require('elasticsearchclient'),
+    util = require('util');
 
 /**
  * Search api provider for books.
@@ -6,16 +7,17 @@ var ElasticSearchClient = require('elasticsearchclient');
  * @constructor default
  */
 Search = function () {
+};
+
+Search.prototype.init = function (cb) {
     //TODO: generify it, as we'll have other types of objects.
     var bonsaiHost;
-    var serverOptions = {
-        host: "localhost",
-        port: 9200
-    };
+    var serverOptions = null;
 
     if (process.env.BONSAI_URL) {
         bonsaiHost = process.env.BONSAI_URL;
         var match = /http:\/\/(\w+):(\w+)@(.+)/g.exec(bonsaiHost);
+        serverOptions = {};
 
         serverOptions.auth = match[1] + ":" + match[2];
         serverOptions.host = match[3];
@@ -23,11 +25,27 @@ Search = function () {
 
         console.log("Env var for bonsai is " + bonsaiHost);
         console.log("Server options are  " + JSON.stringify(serverOptions));
+    } else {
+        serverOptions = {
+            host: "localhost",
+            port: 9200
+        };
+        console.log(util.format("Connecting to local ElasticSearch (%j)", serverOptions));
     }
 
     this.elasticSearchClient = new ElasticSearchClient(serverOptions);
+    var qryObj = {
+        "query": {
+            "query_string": {
+                "query": 'any'
+            }
+        }
+    };
+    this.search('book', 'document', qryObj, null, function (data) {
+        var elasticResponse = JSON.parse(data);
+        cb(elasticResponse.error);
+    });
 };
-
 
 Search.prototype.index = function (indexName, typeName, document, id, options, cb) {
     this.elasticSearchClient
@@ -59,5 +77,5 @@ Search.prototype.update = function (indexName, typeName, mongoDocId, doc, cb) {
         }).exec();
 };
 
-exports.Search = Search;
+exports.Search = new Search();
 

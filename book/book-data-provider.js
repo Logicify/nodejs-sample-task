@@ -15,6 +15,9 @@ var config = require("./../config.json");
  * @constructor default
  */
 BookProvider = function () {
+};
+
+BookProvider.prototype.init = function (cb) {
     //TODO: generify it to support other data providers.
     var username;
     var password;
@@ -30,18 +33,14 @@ BookProvider = function () {
         config.mongoDbName = match[5];
         console.log("Parsed configs. Using connection string provided by mongolab.")
     }
-    this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}, {}));
+    this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}), {safe: true});
     this.db.open(function (err, db) {
-        console.log("Opened connection to DB")
+        console.log("Connected to DB successfully");
         if (username) {
-            console.log('About to perform authentication.')
-            db.authenticate(username, password, function (err, data) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('Success!');
-                }
-            });
+            console.log('About to perform authentication.');
+            db.authenticate(username, password, cb);
+        } else {
+            cb(err);
         }
     });
 };
@@ -133,4 +132,4 @@ BookProvider.prototype.update = function (bookUpdate, callback) {
     });
 };
 
-exports.BookProvider = BookProvider;
+exports.BookProvider = new BookProvider();

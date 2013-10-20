@@ -11,8 +11,8 @@ var Search = require('./book-search.js').Search;
  *
  */
 function BookRestApi() {
-    bookProvider = new BookProvider();
-    searchProvider = new Search();
+    bookProvider = BookProvider;
+    searchProvider = Search;
     self = this;
 
     /**

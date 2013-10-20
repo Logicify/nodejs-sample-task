@@ -6,8 +6,8 @@
     "dependencies": {
         "express": "3.1.1",
         "mongodb": "1.1.11",
-        "elasticsearchclient": ">=0.2.1"
-
+        "elasticsearchclient": ">=0.2.1",
+        "async": "*"
     },
     "devDependencies": {
         "mocha": "1.7.0",
