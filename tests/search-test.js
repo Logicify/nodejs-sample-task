@@ -1,16 +1,19 @@
 var Search = require('../book/book-search.js').Search;
-var should = require("chai");
+var should = require("should");
 
 var indexName = 'book';
 var objName = 'document';
 var json = {"id": "testId", name: "testName", text: "testText"};
 
+var expect = require('chai').expect;
+
 describe("ElasticSearchClient Cluster apis", function () {
 
+    var searchProvider;
+
     before(function (done) {
-        searchProvider = new Search();
-        this.timeout(100);
-        setTimeout(done, 50);
+        searchProvider = Search;
+        Search.init(done);
     });
 
     describe("#Elastic", function () {
@@ -29,7 +32,7 @@ describe("ElasticSearchClient Cluster apis", function () {
             };
             searchProvider.search(indexName, objName, qryObj, null, function (data) {
                 data = JSON.parse(data);
-                data.should.be.ok;
+                expect('data').to.exist;
                 done();
             });
         });
@@ -37,8 +40,8 @@ describe("ElasticSearchClient Cluster apis", function () {
         it('should be update test record ', function (done) {
             searchProvider.update(indexName, objName, "indexId", {doc: {tags: "testTags"}}, function (data) {
                 data = JSON.parse(data);
-                data.should.be.ok;
-                data._id.should.equal("indexId");
+                expect('data').to.exist;
+                data.ok.should.be.true;
                 done();
             });
         });

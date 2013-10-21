@@ -1,5 +1,6 @@
 var BookProvider = require('./book-data-provider.js').BookProvider;
 var Search = require('./book-search.js').Search;
+var LOG = require('../lib/log.js')
 
 /**
  * An object providing rest api for books.
@@ -11,9 +12,9 @@ var Search = require('./book-search.js').Search;
  *
  */
 function BookRestApi() {
-    bookProvider = BookProvider;
-    searchProvider = Search;
-    self = this;
+    var bookProvider = BookProvider;
+    var searchProvider = Search;
+    var self = this;
 
     /**
      * Retuns all the books from the storage. Should be used with care. Apply paging later?
@@ -44,11 +45,11 @@ function BookRestApi() {
 
         bookProvider.save(req.body, function (error, bookSaved) {
             if (error) {
-                console.log('Error saving book. Mongodb: ' + error);
+                LOG('Error saving book. Mongodb: ' + error);
                 res.send(500, 'Error saving book!');
             } else {
                 searchProvider.index('book', 'document', elasticSearch(bookSaved), bookSaved._id.toHexString(), null, function (data) {
-                    console.info(JSON.stringify(data));
+                    LOG(JSON.stringify(data));
                 });
                 res.send(JSON.stringify(bookSaved));
             }
@@ -78,19 +79,19 @@ function BookRestApi() {
         searchProvider.search('book', 'document', qryObj, null, function (data) {
             var elasticResponse = JSON.parse(data);
             if (elasticResponse.error) {
-                console.log('Error from Bonsai: ' + data);
+                LOG('Error from Bonsai: ' + data);
                 res.send(500, "Error from Bonsai");
                 return;
             }
             var hits = elasticResponse.hits.hits;
-            console.log(hits.length + " hits found for query " + req.query.id);
+            LOG(hits.length + " hits found for query " + req.query.id);
 
             var ids = hits.map(function (hit) {
                 return hit._source.id;
             });
             bookProvider.findByIds(ids, function (err, data) {
                 if (err) {
-                    console.log(err);
+                    LOG(err);
                     res.send(500, "Error searching for books.");
                     return;
                 }
@@ -107,7 +108,7 @@ function BookRestApi() {
             }
             else {
                 searchProvider.update('book', 'document', data._id, elasticSearch(data), function (d) {
-                    console.info(JSON.stringify(d));
+                    LOG(JSON.stringify(d));
                 });
                 res.send(data);
             }

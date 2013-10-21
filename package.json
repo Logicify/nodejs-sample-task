@@ -14,6 +14,9 @@
         "should": "1.2.1",
         "supertest": "0.4.0",
         "chai": "*"
+    },
+    "scripts": {
+        "test": "DISABLE_LOG=1 ./node_modules/mocha/bin/mocha --reporter spec --recursive ./tests/"
     }
 }
 

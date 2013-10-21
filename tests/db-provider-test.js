@@ -1,6 +1,7 @@
 var BookProvider = require('../book/book-data-provider.js').BookProvider;
 var should = require("chai");
-var bookProvider = new BookProvider();
+var bookProvider = BookProvider;
+var LOG = require('../lib/log.js');
 
 var testBook = {
     "Title": "Sample title",
@@ -12,9 +13,7 @@ var testBook = {
 describe("REST API test", function () {
 
     before(function (done) {
-
-        this.timeout(100);
-        setTimeout(done, 50);
+        bookProvider.init(done);
     });
 
     describe("#Find All Books", function () {
@@ -22,7 +21,7 @@ describe("REST API test", function () {
         it('should be return all db record', function (done) {
             bookProvider.findAll(function (error, data) {
                 if (error) {
-                    console.info(JSON.stringify({"error": error}))
+                    LOG(JSON.stringify({"error": error}))
                 } else {
                     done();
                 }
@@ -32,9 +31,9 @@ describe("REST API test", function () {
 
             bookProvider.save(testBook, function (error, book) {
                 if (error) {
-                    console.log('Error saving book. Mongodb: ' + error);
+                    LOG('Error saving book. Mongodb: ' + error);
                 } else {
-                    console.log(JSON.stringify(book));
+                    LOG(JSON.stringify(book));
                     done();
                 }
             })

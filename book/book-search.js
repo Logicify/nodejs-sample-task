@@ -1,5 +1,6 @@
 var ElasticSearchClient = require('elasticsearchclient'),
-    util = require('util');
+    util = require('util'),
+    LOG = require('../lib/log.js');
 
 /**
  * Search api provider for books.
@@ -23,14 +24,14 @@ Search.prototype.init = function (cb) {
         serverOptions.host = match[3];
         serverOptions.port = 80;
 
-        console.log("Env var for bonsai is " + bonsaiHost);
-        console.log("Server options are  " + JSON.stringify(serverOptions));
+        LOG("Env var for bonsai is " + bonsaiHost);
+        LOG("Server options are  " + JSON.stringify(serverOptions));
     } else {
         serverOptions = {
             host: "localhost",
             port: 9200
         };
-        console.log(util.format("Connecting to local ElasticSearch (%j)", serverOptions));
+        LOG(util.format("Connecting to local ElasticSearch (%j)", serverOptions));
     }
 
     this.elasticSearchClient = new ElasticSearchClient(serverOptions);
@@ -69,10 +70,10 @@ Search.prototype.search = function (indexName, typeName, queryObj, options, cb) 
 Search.prototype.update = function (indexName, typeName, mongoDocId, doc, cb) {
     this.elasticSearchClient
         .update(indexName, typeName, mongoDocId, {doc: doc}, null, cb).on('data',function (data) {
-            console.log(data);
+            LOG(data);
             cb(data)
         }).on('error',function (error) {
-            console.log(error);
+            LOG(error);
             cb(error)
         }).exec();
 };

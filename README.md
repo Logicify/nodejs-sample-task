@@ -39,13 +39,15 @@ Which runs the server. On the command line where you ran the node, you will obse
 accessible on. Visit that URL in browser, and you are in!
 
 ### Test project
-Don't forget to invoke `npm install -d` Go to the directory
 
-`{project}/node_modules/.bin`
+First, make sure the project is built and running successfully.
 
-execute command
-
-`mocha --require should --reporter spec ../../tests`
+Then simply run the
+```
+npm test
+```
+from within the project directory. This should result in the tests running and producing a specification-like
+ output of the tests.
 
 ## Team
 Thanks to everyone who contributed to this little sample application (originally created in 2 days by a team knowing

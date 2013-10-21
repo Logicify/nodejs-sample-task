@@ -5,6 +5,8 @@ var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
+var LOG = require('../lib/log.js')
+
 var config = require("./../config.json");
 
 
@@ -31,13 +33,13 @@ BookProvider.prototype.init = function (cb) {
         config.mongoHost = match[3];
         config.mongoPort = parseInt(match[4]);
         config.mongoDbName = match[5];
-        console.log("Parsed configs. Using connection string provided by mongolab.")
+        LOG("Parsed configs. Using connection string provided by mongolab.")
     }
     this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}), {safe: true});
     this.db.open(function (err, db) {
-        console.log("Connected to DB successfully");
+        LOG("Connected to DB successfully");
         if (username) {
-            console.log('About to perform authentication.');
+            LOG('About to perform authentication.');
             db.authenticate(username, password, cb);
         } else {
             cb(err);
@@ -121,7 +123,7 @@ BookProvider.prototype.update = function (bookUpdate, callback) {
                 {new: true},
                 function (err, updated) {
                     if (err) {
-                        console.log("Book not updated.");
+                        LOG("Book not updated.");
                         callback(err);
                     }
                     else {
