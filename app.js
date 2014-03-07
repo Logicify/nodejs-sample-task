@@ -12,6 +12,7 @@ Application.prototype.init = function (cb) {
     var self = this;
 
     async.series({
+            "auth": self.authInit.bind(self),
             "configure": self.configure.bind(self),
             "initDatabase": DataProvider.init.bind(DataProvider),
             "initSearchProvider": Search.init.bind(Search),
@@ -29,10 +30,51 @@ Application.prototype.init = function (cb) {
         })
 };
 
+Application.prototype.authInit = function (cb) {
+
+    //the only one user exists in the system for now
+    var validUser = {
+        name: "valid",
+        pass: "user"
+    };
+    var self = this;
+
+    //we need to use session here
+    var session_secret = {secret: 'so very secret', key: 'logicify.sample', cookie: {maxAge: 3600000}};
+    this.app.use(express.cookieParser('shhhh, very secret'));
+    this.app.use(express.session(session_secret));
+
+    //we use basic auth
+    var preAuth = function(req, res, next) {
+        if (req.session.userLogOut) {
+            delete req.headers.authorization;
+            req.session.userLogOut = false;
+        }
+        next();
+    };
+    var message = ["****Use 'User Name':", validUser.name, "and Password:", validUser.pass].join(" ");
+    var auth = express.basicAuth(function (user, pass) {
+        return user === validUser.name && pass === validUser.pass;
+    }, message);
+
+    //define protectWithAuth method
+    //it helps to protect different routes with auth
+    this.protectWithAuth = function(route){
+        self.app.all(route, preAuth, auth);
+    };
+
+    cb();
+};
+
 
 Application.prototype.mountAPI = function (cb) {
     var BookRestApi = require('./book/book-rest-api.js').BookRestApi;
     var bookRestApi = new BookRestApi();
+
+    //protect with auth
+    if(this.protectWithAuth){
+        this.protectWithAuth('/rest/*');
+    }
 
     // mounting REST endpoints. All the other urls would be handled by static (coming from public folder).
     this.app.get('/rest/allBooks', bookRestApi.findAllBooks);
@@ -46,10 +88,20 @@ Application.prototype.configure = function (cb) {
 //Configuration for errorHandler and others.
     var self = this;
     this.app.configure(function () {
-        self.app.use(express.static(__dirname + '/public'));
         self.app.use(express.json());
+
+        //protect static route
+        if(self.protectWithAuth){
+            self.protectWithAuth('/secret.html');
+        }
+        self.app.use(express.static(__dirname + '/public'));
     });
 
+    //mount logout point
+    this.app.get('/logout', function (req, res) {
+        req.session.userLogOut = true;
+        res.redirect('/');
+    });
     this.app.configure('development', function () {
         self.app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     });

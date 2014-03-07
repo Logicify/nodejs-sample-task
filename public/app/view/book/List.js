@@ -6,7 +6,7 @@ Ext.define('ExtJsSample.view.book.List', {
     title: 'Book management system',
     store: 'BookStore',
 
-    height: 500,
+    height: 540,
     width: 620,
     style: 'margin:0 auto; margin-top:50px;',
     layout: 'absolute',
@@ -17,9 +17,18 @@ Ext.define('ExtJsSample.view.book.List', {
         Ext.applyIf(me, {
             items: [
                 {
+                    xtype: 'button',
+                    action: 'logout',
+                    x: 550,
+                    y: 5,
+                    width: 60,
+                    text: 'Logout',
+                    style: "border: solid #F00;"
+                },
+                {
                     xtype: 'textfield',
                     x: 10,
-                    y: 10,
+                    y: 50,
                     formBind: true,
                     width: 433,
                     fieldLabel: 'Keyword',
@@ -38,7 +47,7 @@ Ext.define('ExtJsSample.view.book.List', {
                     xtype: 'button',
                     action: 'search',
                     x: 460,
-                    y: 10,
+                    y: 50,
                     width: 150,
                     text: 'Search'
                 },
@@ -46,7 +55,7 @@ Ext.define('ExtJsSample.view.book.List', {
                     xtype: 'gridpanel',
                     store: 'BookStore',
                     x: 10,
-                    y: 50,
+                    y: 90,
                     width: 600,
                     height: 380,
                     title: 'Search Result',
@@ -61,7 +70,7 @@ Ext.define('ExtJsSample.view.book.List', {
                     xtype: 'button',
                     action: 'createNewRecord',
                     x: 10,
-                    y: 440,
+                    y: 480,
                     width: 150,
                     text: 'Create New Book'
 
