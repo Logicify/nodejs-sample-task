@@ -2,39 +2,30 @@ var request = require('supertest');
     Application = require('../app.js');
     LOG = require('../lib/log.js');
 
-var obj = {
-    "Title": "Sample title",
-    "Text": "Sample text",
-    "Author": "Chris Colman",
-    "Tags": ["a", "b"]};
-
-describe('Server App testing', function () {
+describe('Server Auth testing', function () {
     var app;
 
     beforeEach(function (done) {
         var newApp = new Application();
-        newApp.authInit = function(cb){cb();}; //omit auth
         newApp.init(function (err) {
             app = newApp.app; // saving the express application itself to expose it to Supertest.
             done();
         });
     });
 
-    it('#NewBook', function (done) {
+    it('should open start page', function (done) {
         request(app)
-            .post('/rest/newBook')
-            .send(obj)
+            .get('/index.html')
             .expect(200, done);
-        LOG(done)
     });
-    it('#Search', function (done) {
+    it('should through auth error on search', function (done) {
         request(app)
             .get('/rest/search?q=Sample title')
-            .expect(200, done)
+            .expect(401, done)
     });
-    it('#AllBooks ', function (done) {
+    it('should through auth error on getAll', function (done) {
         request(app)
             .get('/rest/allBooks')
-            .expect(200, done)
+            .expect(401, done)
     });
 });

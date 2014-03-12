@@ -26,6 +26,9 @@ Ext.define('ExtJsSample.controller.BookController', {
             'bookList button[action=search]': {
                 click: this.onSearch
             },
+            'bookList button[action=logout]': {
+                click: this.onLogout
+            },
             'bookEdit button[action=save]': {
                 click: this.doSaveBook
             }
@@ -59,6 +62,29 @@ Ext.define('ExtJsSample.controller.BookController', {
         store.load({
             params: {q: searchQuery}
         })
+    },
+
+    onLogout: function () {
+        Ext.Msg.show({
+            title:'Logout',
+            msg: 'You are about to logout. Is it correct?...',
+            buttons: Ext.Msg.YESNO,
+            fn: function(btn){
+                if (btn == 'yes'){
+                    Ext.Ajax.request({
+                        url: '/logout',
+                        method: 'GET',
+                        success: function(){
+                            document.location.replace('/');
+                        }
+                    });
+                }
+            },
+            animEl: 'elId',
+            icon: Ext.Msg.QUESTION,
+            minWidth: 300
+        });
+
     },
 
     doSaveBook: function (button) {
