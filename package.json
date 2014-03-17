@@ -16,7 +16,7 @@
         "chai": "*"
     },
     "scripts": {
-        "test": "DISABLE_LOG=1 ./node_modules/mocha/bin/mocha --reporter spec --recursive ./tests/"
+        "test": "DISABLE_LOG=1 mocha --reporter spec --recursive ./tests/"
     }
 }
 
