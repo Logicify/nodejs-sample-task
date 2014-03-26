@@ -1,24 +1,31 @@
-var Db = require('mongodb').Db;
-var Connection = require('mongodb').Connection;
-var Server = require('mongodb').Server;
+/**
+ * dependencies
+ */
 
-var BSON = require('mongodb').BSON;
-var ObjectID = require('mongodb').ObjectID;
-
-var LOG = require('../lib/log.js')
-
-var config = require("./../config.json");
+var Db = require('mongodb').Db,
+    Server = require('mongodb').Server,
+    BSON = require('mongodb').BSON,
+    ObjectID = require('mongodb').ObjectID,
+    LOG = require('../lib/log.js'),
+    config = require("./../config.json");
 
 
 /**
- * Data provier for books (mongo). Takes configuration either from config.json or the env variable of mongolab given
+ * Data provier for books (mongo).
+ * It takes configuration either from config.json or the env variable of mongolab given
  * by heroku.
  *
- * @constructor default
+ * @constructor
  */
 BookProvider = function () {
 };
 
+/**
+ * create connection to database
+ *
+ * $this {BookProvider}
+ * @param {Function} cb Callback function
+ */
 BookProvider.prototype.init = function (cb) {
     //TODO: generify it to support other data providers.
     var username;
@@ -37,17 +44,28 @@ BookProvider.prototype.init = function (cb) {
     }
     this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}), {safe: true});
     this.db.open(function (err, db) {
-        LOG("Connected to DB successfully");
-        if (username) {
-            LOG('About to perform authentication.');
-            db.authenticate(username, password, cb);
-        } else {
+        if (err) {
             cb(err);
+            return;
         }
+
+        LOG("Connected to DB successfully");
+        if(!username){
+            cb();
+            return;
+        }
+
+        LOG('About to perform authentication.');
+        db.authenticate(username, password, cb);
     });
 };
 
-
+/**
+ * select `book` collection
+ *
+ * @this {BookProvider}
+ * @param {Function} callback Callback function
+ */
 BookProvider.prototype.getCollection = function (callback) {
     this.db.collection('books', function (error, collection) {
         if (error) callback(error);
@@ -67,6 +85,13 @@ BookProvider.prototype.findAll = function (callback) {
     });
 };
 
+/**
+ * save book into the database
+ *
+ * @this {BookProvider}
+ * @param {bookModel} book Book object to save in the database
+ * @param callback
+ */
 BookProvider.prototype.save = function (book, callback) {
     this.getCollection(function (error, collection) {
         if (error) {
@@ -87,6 +112,14 @@ BookProvider.prototype.save = function (book, callback) {
     });
 };
 
+
+/**
+ * find Array of book objects by specified Array of id
+ *
+ * @this {BookProvider}
+ * @param {Array.<ObjectID>} ids Array of id to look for
+ * @param {Function} callback Callback function
+ */
 BookProvider.prototype.findByIds = function (ids, callback) {
     this.getCollection(function (error, collection) {
         if (error) {
@@ -107,6 +140,14 @@ BookProvider.prototype.findByIds = function (ids, callback) {
     })
 };
 
+
+/**
+ * update book in the database
+ *
+ * @this {BookProvider}
+ * @param {bookModel} bookUpdate Book object to update
+ * @param {Function} callback Callback function
+ */
 BookProvider.prototype.update = function (bookUpdate, callback) {
     this.getCollection(function (error, collection) {
         if (error) {

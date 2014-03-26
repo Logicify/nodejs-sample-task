@@ -1,6 +1,10 @@
-var BookProvider = require('./book-data-provider.js').BookProvider;
-var Search = require('./book-search.js').Search;
-var LOG = require('../lib/log.js')
+/**
+ * dependencies
+ */
+var BookProvider = require('./book-data-provider.js').BookProvider,
+    Search = require('./book-search.js').Search,
+    LOG = require('../lib/log.js'),
+    async = require("async");
 
 /**
  * An object providing rest api for books.
@@ -38,22 +42,20 @@ function BookRestApi() {
      * @param res express response
      */
     this.newBook = function (req, res) {
-        if (!req.body) {
-            res.send(500, "Wrong format - maybe malformed json?");
-            return;
-        }
 
-        bookProvider.save(req.body, function (error, bookSaved) {
-            if (error) {
-                LOG('Error saving book. Mongodb: ' + error);
+        async.waterfall([
+            async.apply(bookProvider.save.bind(bookProvider), req.body),
+            searchProvider.index.bind(searchProvider)
+        ], function (err, data) {
+            if (err) {
+                LOG('Error saving book: ' + err);
                 res.send(500, 'Error saving book!');
-            } else {
-                searchProvider.index('book', 'document', elasticSearch(bookSaved), bookSaved._id.toHexString(), null, function (data) {
-                    LOG(JSON.stringify(data));
-                });
-                res.send(JSON.stringify(bookSaved));
+                return;
             }
-        })
+            var message = JSON.stringify(data);
+            LOG(message);
+            res.send(message);
+        });
     };
 
 
@@ -69,58 +71,52 @@ function BookRestApi() {
             self.findAllBooks(req, res);
             return;
         }
-        var qryObj = {
-            "query": {
-                "query_string": {
-                    "query": req.query.q
-                }
-            }
-        };
-        searchProvider.search('book', 'document', qryObj, null, function (data) {
-            var elasticResponse = JSON.parse(data);
-            if (elasticResponse.error) {
-                LOG('Error from Bonsai: ' + data);
-                res.send(500, "Error from Bonsai");
-                return;
-            }
-            var hits = elasticResponse.hits.hits;
-            LOG(hits.length + " hits found for query " + req.query.id);
 
-            var ids = hits.map(function (hit) {
-                return hit._source.id;
-            });
-            bookProvider.findByIds(ids, function (err, data) {
-                if (err) {
-                    LOG(err);
-                    res.send(500, "Error searching for books.");
+        async.waterfall([
+            async.apply(searchProvider.search.bind(searchProvider), req.query.q, null),
+            function (data, cb) {
+                var elasticResponse = JSON.parse(data);
+                if (elasticResponse.error) {
+                    LOG('Error from Bonsai: ' + data);
+                    res.send(500, "Error from Bonsai");
                     return;
                 }
-                res.send(data)
-            });
+                var hits = elasticResponse.hits.hits;
+                LOG(hits.length + " hits found for query " + req.query.id);
 
+                var ids = hits.map(function (hit) {
+                    return hit._source.id;
+                });
+                async.nextTick(function () {
+                    cb(null, ids);
+                });
+            },
+            bookProvider.findByIds.bind(bookProvider)
+        ], function (err, data) {
+            if (err) {
+                LOG(err);
+                res.send(500, "Error searching for books.");
+                return;
+            }
+            res.send(data);
         });
     };
 
     this.update = function (req, res) {
-        bookProvider.update(req.body, function (err, data) {
+
+        async.auto({
+            "inMongo": async.apply(bookProvider.update.bind(bookProvider), req.body),
+            "inSearch": ["inMongo", function (cb, results) {
+                searchProvider.update(results.inMongo, cb);
+            }]
+        }, function (err, results) {
             if (err) {
                 res.send(500, 'Error saving book!');
+                return;
             }
-            else {
-                searchProvider.update('book', 'document', data._id, elasticSearch(data), function (d) {
-                    LOG(JSON.stringify(d));
-                });
-                res.send(data);
-            }
+            LOG(JSON.stringify(results.inSearch));
+            res.send(results.inMongo);
         });
-    };
-
-    var elasticSearch = function (book) {
-        return {
-            "name": book.name,
-            "text": [book.Text, book.Title, book.Author, book.Tags.join(" ")].join(" "),
-            "id": book._id
-        }
     };
 }
 

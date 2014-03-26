@@ -1,5 +1,13 @@
 /**
- * all book validation schemas here
+ * all book validation schemas here, which are:
+ *  - findAllBooks,
+ *  - newBook,
+ *  - searchForBooks,
+ *  - update
+ */
+
+/**
+ * dependencies
  */
 var _ = require('underscore');
 
@@ -31,10 +39,22 @@ var bookModel = {
     }
 };
 
+/**
+ * return bookModel as it is
+ *
+ * @returns {bookModel} cloned bookModel object
+ * @private
+ */
 var _getBookModel = function(){
     return _.clone(bookModel);
 };
 
+/**
+ * return bookModel for update operations
+ *
+ * @returns {bookModel} cloned bookModel object
+ * @private
+ */
 var _getUpdateBookModel = function () {
     var result = _getBookModel();
     _.each(result, function(item){
