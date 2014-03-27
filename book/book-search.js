@@ -4,6 +4,7 @@
 var ElasticSearchClient = require('elasticsearchclient'),
     util = require('util'),
     LOG = require('../lib/log.js'),
+    config = require('../configuration').getElasticConfiguration(),
     async = require("async");
 
 /**
@@ -47,29 +48,11 @@ function mapBookToSearchFormat(book) {
  * @param {Function} cb Callback function
  */
 Search.prototype.init = function (cb) {
-    var bonsaiHost;
-    var serverOptions = null;
+    //TODO: generify it, as we'll have other types of objects.
 
-    if (process.env.BONSAI_URL) {
-        bonsaiHost = process.env.BONSAI_URL;
-        var match = /http:\/\/(\w+):(\w+)@(.+)/g.exec(bonsaiHost);
-        serverOptions = {};
+    LOG(util.format("Connecting to ElasticSearch (%j)", config));
 
-        serverOptions.auth = match[1] + ":" + match[2];
-        serverOptions.host = match[3];
-        serverOptions.port = 80;
-
-        LOG("Env var for bonsai is " + bonsaiHost);
-        LOG("Server options are  " + JSON.stringify(serverOptions));
-    } else {
-        serverOptions = {
-            host: "localhost",
-            port: 9200
-        };
-        LOG(util.format("Connecting to local ElasticSearch (%j)", serverOptions));
-    }
-
-    this.elasticSearchClient = new ElasticSearchClient(serverOptions);
+    this.elasticSearchClient = new ElasticSearchClient(config);
 
     async.nextTick(cb);
 };

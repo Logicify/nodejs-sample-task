@@ -7,8 +7,7 @@ var Db = require('mongodb').Db,
     BSON = require('mongodb').BSON,
     ObjectID = require('mongodb').ObjectID,
     LOG = require('../lib/log.js'),
-    config = require("./../config.json");
-
+    config = require("../configuration").getMongoConfiguration();
 
 /**
  * Data provier for books (mongo).
@@ -28,21 +27,7 @@ BookProvider = function () {
  */
 BookProvider.prototype.init = function (cb) {
     //TODO: generify it to support other data providers.
-    var username;
-    var password;
-
-    var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL;
-    if (mongoUri) {
-        // parsing mongoLab, if any
-        var match = /mongodb:\/\/(\w+):(\w+)@([\w\.]+):(\d+)\/(\w+)/g.exec(mongoUri);
-        username = match[1];
-        password = match[2];
-        config.mongoHost = match[3];
-        config.mongoPort = parseInt(match[4]);
-        config.mongoDbName = match[5];
-        LOG("Parsed configs. Using connection string provided by mongolab.")
-    }
-    this.db = new Db(config.mongoDbName, new Server(config.mongoHost, config.mongoPort, {auto_reconnect: true}), {safe: true});
+    this.db = new Db(config.dbName, new Server(config.host, config.port, {auto_reconnect: true}), {safe: true});
     this.db.open(function (err, db) {
         if (err) {
             cb(err);
@@ -50,13 +35,13 @@ BookProvider.prototype.init = function (cb) {
         }
 
         LOG("Connected to DB successfully");
-        if(!username){
+        if(!config.username){
             cb();
             return;
         }
 
         LOG('About to perform authentication.');
-        db.authenticate(username, password, cb);
+        db.authenticate(config.username, config.password, cb);
     });
 };
 
