@@ -6,6 +6,7 @@ var express = require('express'),
     Search = require('./book/book-search.js').Search,
     DataProvider = require('./book/book-data-provider.js').BookProvider,
     LOG = require('./lib/log.js'),
+    config = require('./configuration').getConfiguration(),
     validator = require('./lib/validator'),
     path = require('path');
 
@@ -67,9 +68,8 @@ Application.prototype.authInit = function (cb) {
     var self = this;
 
     //we need to use session here
-    var session_secret = {secret: 'so very secret', key: 'logicify.sample', cookie: {maxAge: 3600000}};
-    this.app.use(express.cookieParser('shhhh, very secret'));
-    this.app.use(express.session(session_secret));
+    this.app.use(express.cookieParser(config.cookieParser.secret));
+    this.app.use(express.session(config.session));
 
     //we use basic auth
     var preAuth = function(req, res, next) {
@@ -175,9 +175,8 @@ Application.prototype.configure = function (cb) {
  */
 Application.prototype.bindServer = function (cb) {
 // Binding to port provided by Heroku, or to the default one.
-    var portToListenTo = process.env.PORT || 3000;
-    this.app.listen(portToListenTo, function (err, server) {
-        LOG('Application started on ULR http://localhost:' + portToListenTo);
+    this.app.listen(config.port, function (err) {
+        LOG('Application started on ULR http://localhost:' + config.port);
         if (cb) {
             cb(err);
         }

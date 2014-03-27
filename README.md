@@ -24,7 +24,9 @@ You can see the app instance at [http://http://nodejs-sample-task.logicify.com/]
         - [extjs](#extjs)
         - [json-validation](#json-validation)
         - [basic authentication](#basic-authentication)
+        - [multi environment configuration](#multi-environment-configuration)
     - [Changelog](#changelog)
+        - [2014/03/27](#20140327)
         - [2014/03/26](#20140326)
         - [2014/03/07](#20140307)
     - [Team](#team)
@@ -127,7 +129,24 @@ Related code parts:
  * ```Application``` from ```app.js```. Look for authInit and protectWithAuth functions
  * Explore related tests
 
+### multi environment configuration
+
+It seems that any project should have different configurations to run at least in three configuration environments, such are:
+ * test
+ * development
+ * production
+
+Those configurations are created in our sample task and code related to those changes has been changed accordingly.
+
+Related code parts:
+* created ```configuration``` folder with 4 js files
+* ```configuration/index.js``` - a single entry point for any configuration
+
 ## Changelog
+
+### 2014/03/27
+
+* created multi environment configuration
 
 ### 2014/03/26
 

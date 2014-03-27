@@ -1,5 +1,0 @@
-{
-    "mongoDbName": "nodejs-mongo-sample",
-    "mongoHost": "localhost",
-    "mongoPort": 27017
-}
