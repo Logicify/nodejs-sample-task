@@ -6,9 +6,13 @@ var express = require('express'),
     Search = require('./book/book-search.js').Search,
     DataProvider = require('./book/book-data-provider.js').BookProvider,
     LOG = require('./lib/log.js'),
-    config = require('./configuration').getConfiguration(),
+    _config = require('./configuration'),
+    config = _config.getConfiguration(),
     validator = require('./lib/validator'),
-    path = require('path');
+    path = require('path'),
+    mongoStore = require('connect-mongo')(express),
+    storeConfig = _config.getStoreConfig(),
+    _ = require('underscore');
 
 /**
  * The Application
@@ -69,7 +73,13 @@ Application.prototype.authInit = function (cb) {
 
     //we need to use session here
     this.app.use(express.cookieParser(config.cookieParser.secret));
-    this.app.use(express.session(config.session));
+    // it is required to use external storage for session
+    //we opt to use mongoDb
+    this.app.use(
+        express.session(_.extend(
+            {},
+            config.session,
+            {store: new mongoStore(storeConfig)})));
 
     //we use basic auth
     var preAuth = function(req, res, next) {

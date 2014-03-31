@@ -43,7 +43,10 @@ function _getElasticParameters() {
     if (bonsaiHost) {
         var match = /http:\/\/(\w+):(\w+)@(.+)/g.exec(bonsaiHost);
 
-        parameters.auth = match[1] + ":" + match[2];
+        parameters.auth = {
+            username: match[1],
+            password: match[2]
+        };
         parameters.host = match[3];
         parameters.port = 80;
     }
