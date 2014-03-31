@@ -19,7 +19,7 @@
         "chai": "*"
     },
     "scripts": {
-        "test": "DISABLE_LOG=1 mocha --reporter spec --recursive ./tests/",
+        "test": "DISABLE_LOG=1 NODE_ENV=test mocha --reporter spec --recursive ./tests/",
         "prestart": "./bin/setup.js"
     }
 }

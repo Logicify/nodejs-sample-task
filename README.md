@@ -25,7 +25,9 @@ You can see the app instance at [http://http://nodejs-sample-task.logicify.com/]
         - [json-validation](#json-validation)
         - [basic authentication](#basic-authentication)
         - [multi environment configuration](#multi-environment-configuration)
+        - [https server](#https-server)
     - [Changelog](#changelog)
+        - [2014/03/28](#20140328)
         - [2014/03/27](#20140327)
         - [2014/03/26](#20140326)
         - [2014/03/07](#20140307)
@@ -139,10 +141,33 @@ It seems that any project should have different configurations to run at least i
 Those configurations are created in our sample task and code related to those changes has been changed accordingly.
 
 Related code parts:
+
 * created ```configuration``` folder with 4 js files
 * ```configuration/index.js``` - a single entry point for any configuration
 
+### https server
+
+Every web application should receive and send personal user information in most situations. And our application does not stand alone. 
+
+User sends their credentials, book content can be secure and so on.
+That is why we have implemented new feature - https server.
+
+Please look at this [heroku article](https://devcenter.heroku.com/articles/ssl-endpoint) how to aquire ssl sertificate. With our app we were going through detailed instructions of this article.
+
+Related code parts:
+
+ * ```/certificates/https/server.key``` - private key
+ * ```/certificates/https/server.csr``` - certificate signing request
+ * ```/certificates/https/server.crt``` - self signed ssl certificate
+ * made new records in the configuration files
+ * added secure server in ```Application``` object, have made auto redirection to secure entry point
+ * added new record to start script ```server.js```
+
 ## Changelog
+
+### 2014/03/28
+
+ * added https server
 
 ### 2014/03/27
 

@@ -23,6 +23,11 @@ var configuration = {
     },
     cookieParser: {
         secret: 'shhhh, very secret'
+    },
+    https: {
+        port: 5000,
+        key: 'certificates/https/server.key',
+        cert: 'certificates/https/server.crt'
     }
 };
 

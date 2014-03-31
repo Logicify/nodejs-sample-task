@@ -1,4 +1,3 @@
-
 /**
  * generate mongo parameters
  * @returns {{dbName: string, host: string, port: number, username: string, password: string}}
@@ -80,7 +79,8 @@ var configuration = {
     },
     cookieParser: {
         secret: 'shhhh, very secret'
-    }
+    },
+    https: null  //no need to run secure server
 };
 
 module.exports = configuration;

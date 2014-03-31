@@ -67,6 +67,10 @@ function getLogConfiguration(env){
     return getConfiguration(env).log;
 }
 
+function getHTTPSConfiguration(env){
+    return getConfiguration(env).https;
+}
+
 /**
  * return configuration Object for session store
  *
@@ -83,5 +87,6 @@ module.exports = {
     getMongoConfiguration: getMongoConfiguration,
     getElasticConfiguration: getElasticConfiguration,
     getLogConfiguration: getLogConfiguration,
+    getHTTPSConfiguration: getHTTPSConfiguration,
     getStoreConfig: getStoreConfig
 };
