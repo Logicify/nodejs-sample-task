@@ -3,5 +3,5 @@ var Application = require('./app'),
 
 appInstance.init(function (err) {
     appInstance.bindServer();
-    appInstance.bindSecureServer();
+    appInstance.bindSecureServerIfNeeded();
 });

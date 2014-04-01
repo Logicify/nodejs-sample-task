@@ -210,8 +210,15 @@ Application.prototype.bindServer = function (cb) {
 
 };
 
-Application.prototype.bindSecureServer = function(cb){
-    //do we need to create and run secure server? - on Heroku it is redundant
+/**
+ * run secure server
+ * this is only required when running https on the local server
+ * on Heroku it is redundant
+ *
+ * @this {Application}
+ * @param {Function} cb Callback function
+ */
+Application.prototype.bindSecureServerIfNeeded = function(cb){
     if (!httpsConfig){
         if(cb){
             async.nextTick(cb);
