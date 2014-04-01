@@ -6,9 +6,16 @@ var express = require('express'),
     Search = require('./book/book-search.js').Search,
     DataProvider = require('./book/book-data-provider.js').BookProvider,
     LOG = require('./lib/log.js'),
-    config = require('./configuration').getConfiguration(),
+    _config = require('./configuration'),
+    config = _config.getConfiguration(),
+    httpsConfig = _config.getHTTPSConfiguration(),
+    https = require('https'),
+    fs = require('fs'),
     validator = require('./lib/validator'),
-    path = require('path');
+    path = require('path'),
+    mongoStore = require('connect-mongo')(express),
+    storeConfig = _config.getStoreConfig(),
+    _ = require('underscore');
 
 /**
  * The Application
@@ -69,7 +76,13 @@ Application.prototype.authInit = function (cb) {
 
     //we need to use session here
     this.app.use(express.cookieParser(config.cookieParser.secret));
-    this.app.use(express.session(config.session));
+    // it is required to use external storage for session
+    //we opt to use mongoDb
+    this.app.use(
+        express.session(_.extend(
+            {},
+            config.session,
+            {store: new mongoStore(storeConfig)})));
 
     //we use basic auth
     var preAuth = function(req, res, next) {
@@ -141,22 +154,35 @@ Application.prototype.mountAPI = function (cb) {
 Application.prototype.configure = function (cb) {
 //Configuration for errorHandler and others.
     var self = this;
-    this.app.configure(function () {
-        self.app.use(express.favicon(path.join(__dirname, 'favicon.ico')));
-        self.app.use(express.json());
 
-        //protect static route
-        if(self.protectWithAuth){
-            self.protectWithAuth('/secret.html');
-        }
-        self.app.use(express.static(path.join(__dirname, 'public')));
+    this.app.use(express.favicon(path.join(__dirname, 'favicon.ico')));
+    this.app.use(express.json());
+
+    this.app.configure("development", "production", function () {
+        //mount secure point
+        //it forces all request to be redirected on HTTPS
+        self.app.use(function (req, res, next) {
+            if (!config.isHTTPS(req)) {
+                var host = (config.https && config.https.port)
+                        ? [config.host, ':', config.https.port] : [config.host];
+                return res.redirect(['https://'].concat(host, [req.url]).join(''));
+            }
+            next();
+        });
     });
+
+    //protect static route
+    if(this.protectWithAuth){
+        this.protectWithAuth('/secret.html');
+    }
+    this.app.use(express.static(path.join(__dirname, 'public')));
 
     //mount logout point
     this.app.get('/logout', function (req, res) {
         req.session.userLogOut = true;
         res.redirect('/');
     });
+
     this.app.configure('development', function () {
         self.app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     });
@@ -176,12 +202,45 @@ Application.prototype.configure = function (cb) {
 Application.prototype.bindServer = function (cb) {
 // Binding to port provided by Heroku, or to the default one.
     this.app.listen(config.port, function (err) {
-        LOG('Application started on ULR http://localhost:' + config.port);
+        LOG(['Application started on ULR http://', config.host, ':', config.port].join(''));
         if (cb) {
             cb(err);
         }
     });
 
+};
+
+/**
+ * run secure server
+ * this is only required when running https on the local server
+ * on Heroku it is redundant
+ *
+ * @this {Application}
+ * @param {Function} cb Callback function
+ */
+Application.prototype.bindSecureServerIfNeeded = function(cb){
+    if (!httpsConfig){
+        if(cb){
+            async.nextTick(cb);
+        }
+        return;
+    }
+
+    //create secure server
+    var self = this;
+    var certData = {
+        key: fs.readFileSync(httpsConfig.key),
+        cert: fs.readFileSync(httpsConfig.cert)
+    };
+    //create server
+    var secureServer = https.createServer(certData, self.app);
+    //run server
+    secureServer.listen(httpsConfig.port, function(err){
+        LOG(['Secure server up and running on port: https://', config.host, ':', httpsConfig.port].join(''));
+        if(cb){
+            cb(err);
+        }
+    });
 };
 
 

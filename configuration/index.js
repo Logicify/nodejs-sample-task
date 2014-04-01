@@ -29,7 +29,7 @@ function _getEnvironment(env){
 /**
  * return full configuration Object
  *
- * @param {String} env
+ * @param {String} [env = 'dev']
  * @returns {*}
  */
 function getConfiguration(env){
@@ -40,7 +40,7 @@ function getConfiguration(env){
 /**
  * return configuration Object for mongo
  *
- * @param env
+ * @param {String} env [env = 'dev']
  * @returns {*}
  */
 function getMongoConfiguration(env){
@@ -50,7 +50,7 @@ function getMongoConfiguration(env){
 /**
  * return configuration Object for elastic
  *
- * @param env
+ * @param {String} [env = 'dev']
  * @returns {*}
  */
 function getElasticConfiguration(env){
@@ -60,16 +60,33 @@ function getElasticConfiguration(env){
 /**
  * return configuration Object for log
  *
- * @param env
+ * @param {String} [env = 'dev']
  * @returns {*}
  */
 function getLogConfiguration(env){
     return getConfiguration(env).log;
 }
 
+function getHTTPSConfiguration(env){
+    return getConfiguration(env).https;
+}
+
+/**
+ * return configuration Object for session store
+ *
+ * @param {String} [env = 'dev']
+ * @returns {*}
+ */
+function getStoreConfig(env){
+    var mongoConfig = getMongoConfiguration(env);
+    return _.extend({}, mongoConfig, {db: mongoConfig.dbName});
+}
+
 module.exports = {
     getConfiguration: getConfiguration,
     getMongoConfiguration: getMongoConfiguration,
     getElasticConfiguration: getElasticConfiguration,
-    getLogConfiguration: getLogConfiguration
+    getLogConfiguration: getLogConfiguration,
+    getHTTPSConfiguration: getHTTPSConfiguration,
+    getStoreConfig: getStoreConfig
 };

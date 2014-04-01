@@ -1,4 +1,3 @@
-
 /**
  * generate mongo parameters
  * @returns {{dbName: string, host: string, port: number, username: string, password: string}}
@@ -43,7 +42,10 @@ function _getElasticParameters() {
     if (bonsaiHost) {
         var match = /http:\/\/(\w+):(\w+)@(.+)/g.exec(bonsaiHost);
 
-        parameters.auth = match[1] + ":" + match[2];
+        parameters.auth = {
+            username: match[1],
+            password: match[2]
+        };
         parameters.host = match[3];
         parameters.port = 80;
     }
@@ -67,6 +69,7 @@ function _getLogParameters() {
 
 var configuration = {
     port: process.env.PORT,
+    host: 'node-sample-task.herokuapp.com',
     mongo: _getMongoParameters(),
     elastic: _getElasticParameters(),
     log: _getLogParameters(),
@@ -77,6 +80,10 @@ var configuration = {
     },
     cookieParser: {
         secret: 'shhhh, very secret'
+    },
+    https: null,  //no need to run secure server
+    isHTTPS: function(req){
+        return req.headers['x-forwarded-proto'] === 'https';
     }
 };
 

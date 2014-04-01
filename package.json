@@ -9,7 +9,8 @@
         "elasticsearchclient": ">=0.2.1",
         "async": "*",
         "json-schema": "0.2.*",
-        "underscore": "1.6.0"
+        "underscore": "1.6.0",
+        "connect-mongo": "0.4.*"
     },
     "devDependencies": {
         "mocha": "1.7.0",
@@ -18,7 +19,7 @@
         "chai": "*"
     },
     "scripts": {
-        "test": "DISABLE_LOG=1 mocha --reporter spec --recursive ./tests/",
+        "test": "DISABLE_LOG=1 NODE_ENV=test mocha --reporter spec --recursive ./tests/",
         "prestart": "./bin/setup.js"
     }
 }
