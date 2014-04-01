@@ -4,6 +4,7 @@ var defaultPort = 3000;
 
 var configuration = {
     port: process.env.PORT || defaultPort,
+    host: 'localhost',
     mongo: {
         dbName: "nodejs-mongo-sample",
         host: "localhost",
@@ -28,6 +29,9 @@ var configuration = {
         port: 5000,
         key: 'certificates/https/server.key',
         cert: 'certificates/https/server.crt'
+    },
+    isHTTPS: function(req){
+        return Boolean(req.secure);
     }
 };
 

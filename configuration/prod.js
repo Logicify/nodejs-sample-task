@@ -69,6 +69,7 @@ function _getLogParameters() {
 
 var configuration = {
     port: process.env.PORT,
+    host: 'node-sample-task.herokuapp.com',
     mongo: _getMongoParameters(),
     elastic: _getElasticParameters(),
     log: _getLogParameters(),
@@ -80,7 +81,10 @@ var configuration = {
     cookieParser: {
         secret: 'shhhh, very secret'
     },
-    https: null  //no need to run secure server
+    https: null,  //no need to run secure server
+    isHTTPS: function(req){
+        return req.headers['x-forwarded-proto'] === 'https';
+    }
 };
 
 module.exports = configuration;

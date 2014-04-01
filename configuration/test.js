@@ -3,6 +3,7 @@ var defaultPort = 3000;
 
 var configuration = {
     port: process.env.PORT || defaultPort,
+    host: 'localhost',
     mongo: {
         dbName: "nodejs-mongo-sample-test",
         host: "localhost",
@@ -22,7 +23,8 @@ var configuration = {
     },
     cookieParser: {
         secret: 'shhhh, very secret'
-    }
+    },
+    isHTTPS: function(req){return true;}
 };
 
 module.exports = configuration;

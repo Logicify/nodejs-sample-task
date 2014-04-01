@@ -162,11 +162,10 @@ Application.prototype.configure = function (cb) {
         //mount secure point
         //it forces all request to be redirected on HTTPS
         self.app.use(function (req, res, next) {
-            if (!(req.secure || req.headers['x-forwarded-proto'] === 'https')) {
-                var host = req.get('host'),
-                    pieces = /^(\S+):(\d+)/g.exec(host),
-                    newHost = pieces ? [pieces[1], ':', config.https.port] : [host];
-                return res.redirect(['https://'].concat(newHost, [req.url]).join(''));
+            if (!config.isHTTPS(req)) {
+                var host = (config.https && config.https.port)
+                        ? [config.host, ':', config.https.port] : [config.host];
+                return res.redirect(['https://'].concat(host, [req.url]).join(''));
             }
             next();
         });
@@ -203,7 +202,7 @@ Application.prototype.configure = function (cb) {
 Application.prototype.bindServer = function (cb) {
 // Binding to port provided by Heroku, or to the default one.
     this.app.listen(config.port, function (err) {
-        LOG('Application started on ULR http://localhost:' + config.port);
+        LOG(['Application started on ULR http://', config.host, ':', config.port].join(''));
         if (cb) {
             cb(err);
         }
@@ -230,7 +229,7 @@ Application.prototype.bindSecureServer = function(cb){
     var secureServer = https.createServer(certData, self.app);
     //run server
     secureServer.listen(httpsConfig.port, function(err){
-        LOG('Secure server up and running on port: '+ httpsConfig.port);
+        LOG(['Secure server up and running on port: https://', config.host, ':', httpsConfig.port].join(''));
         if(cb){
             cb(err);
         }
