@@ -15,7 +15,8 @@ var express = require('express'),
     path = require('path'),
     mongoStore = require('connect-mongo')(express),
     storeConfig = _config.getStoreConfig(),
-    _ = require('underscore');
+    _ = require('underscore'),
+    routes = require('./routes');
 
 /**
  * The Application
@@ -155,6 +156,8 @@ Application.prototype.configure = function (cb) {
 //Configuration for errorHandler and others.
     var self = this;
 
+    this.app.set('views', path.join(__dirname, 'views'));
+    this.app.set('view engine', 'jade');
     this.app.use(express.favicon(path.join(__dirname, 'favicon.ico')));
     this.app.use(express.json());
 
@@ -175,6 +178,13 @@ Application.prototype.configure = function (cb) {
     if(this.protectWithAuth){
         this.protectWithAuth('/secret.html');
     }
+
+    //map static routes
+    routes.static(this.app);
+
+    this.app.use(this.app.router);
+
+    //map static sources
     this.app.use(express.static(path.join(__dirname, 'public')));
 
     //mount logout point
@@ -182,6 +192,10 @@ Application.prototype.configure = function (cb) {
         req.session.userLogOut = true;
         res.redirect('/');
     });
+
+    //bind route404 as middleware
+    //if we pass here - no routes were found
+    this.app.use(routes.route404);
 
     this.app.configure('development', function () {
         self.app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
