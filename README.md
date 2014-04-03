@@ -26,7 +26,9 @@ You can see the app instance at [http://http://nodejs-sample-task.logicify.com/]
         - [basic authentication](#basic-authentication)
         - [multi environment configuration](#multi-environment-configuration)
         - [https server](#https-server)
+        - [Jade template engine](#jade-template-engine)
     - [Changelog](#changelog)
+        - [2014/04/04](#20140404)
         - [2014/03/28](#20140328)
         - [2014/03/27](#20140327)
         - [2014/03/26](#20140326)
@@ -163,7 +165,24 @@ Related code parts:
  * added secure server in ```Application``` object, have made auto redirection to secure entry point
  * added new record to start script ```server.js```
 
+### Jade template engine
+
+Every web application has couple of *static* pages, which are - index page, 404 page, login/logout pages etc. 
+
+These pages have many common parts. And there is a very good point to use template engine to encapsulate this commons. 
+
+Related code parts:
+
+* created ```/view``` directory with all ```*.jade``` files
+* ```/routes/index.js``` file with our static routes mounted in ```app.js```
+* files ```/public/index.html``` and ```/public/secret.html``` deleted as they no more needed
+* ```app.js``` and ```package.json``` are changed to reflect our additions 
+
 ## Changelog
+
+### 2014/04/04
+
+* taken Jade template engine in use, added 404 page
 
 ### 2014/03/28
 
